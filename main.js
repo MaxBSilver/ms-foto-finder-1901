@@ -5,18 +5,26 @@ var addToAlbumEl = document.querySelector('.add-to-album-btn');
 var captionInputEl = document.querySelector('#caption-input');
 var chooseFileBtnEl = document.querySelector('.choose-file-btn');
 var mainEl = document.querySelector('main');
-var imagesArr = JSON.parse(localStorage.getItem('photos')) || [];
+var images = JSON.parse(localStorage.getItem('photos')) || [];
 // var reader = new FileReader();
 /* Event Listeners */
 // window.addEventListener('load', appendPhotos);
-addToAlbumEl.addEventListener('click', create);
+addToAlbumEl.addEventListener('click', addToAlbum);
 
 /* Functions */
+
+function addToAlbum (event) {
+  event.preventDefault();
+  create();
+}
 function create() {
    var cardId = Date.now();
-   var cardTitleVal = titleInputEl.value;
+   var titleInputVal = titleInputEl.value;
    var captionInputVal = captionInputEl.value;
-   generateCard(cardId, cardTitleVal, captionInputVal);
+   var newPhoto = new Photo(cardId, titleInputVal, captionInputVal);
+   images.push(newPhoto);
+   generateCard(cardId, titleInputVal, captionInputVal);
+   newPhoto.saveToStorage();
 }
 
 function generateCard(id, title, caption) {
