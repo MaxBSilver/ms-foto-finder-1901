@@ -6,7 +6,7 @@
 <body>
   <nav>
     <input type="text" id="search" placeholder="Search">
-    <button class="search"></button>
+    <button class="search-btn"></button>
   </nav>
   <header>
     <form>
@@ -14,12 +14,27 @@
       <input id ="title-input"type="text"> 
       <label for="caption-input">Caption</label>
       <input id="caption-input" type="text">
-      <button class="choose-file">Choose File</button>
-      <button class="view-favorites">View Favorites</button>
-      <button class="add-to-album">Add to Album</button>
+      <button class="foto-btn choose-file-btn">Choose File</button>
+      <button class="foto-btn view-favorites-btn">View Favorites</button>
+      <button class="foto-btn add-to-album-btn">Add to Album</button>
     </form>
   </header>
   <main>
+    <article class="photo">
+      <section class="photo-title">
+        <h2>Dog Photo</h2>
+      </section>
+      <section class="photo-img">
+        <img src="https://images.pexels.com/photos/356378/pexels-photo-356378.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500">
+      </section>
+      <section class="photo-caption">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+      </section>
+      <section class="photo-btns">
+        <button class="trash-btn">trash</button>
+        <button class="favorite-btn">favorite</button>
+      </section>
+    </article>
   </main>
 </body>
 </html>
