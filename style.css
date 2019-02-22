@@ -10,6 +10,7 @@
 body {
   margin: 0;
   padding: 0;
+  background-color: #3E2A35;
 }
 
 input {
@@ -19,15 +20,16 @@ input {
 /* -- Nav -- */
 
 nav {
-  background-color: #3E2A35;
+  height:50px;
+  margin: 20px 20px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 /* -- Header --*/
 
 header {
-  background-color: #3E2A35;
   display: flex;
   justify-content: center;
   height: 40vh;
