@@ -4,12 +4,41 @@
 *:after,
 * {
   box-sizing: border-box;
+  border: 1px solid black;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+input {
+  border: none;
 }
 
 /* -- Nav -- */
 
+nav {
+  background-color: #3E2A35;
+  display: flex;
+  justify-content: space-between;
+}
 
 /* -- Header --*/
 
+header {
+  background-color: #3E2A35;
+  display: flex;
+  justify-content: center;
+  height: 40vh;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  justify-content: space-around;
+  margin-top:30px;
+}
 
 /* -- Main --*/
