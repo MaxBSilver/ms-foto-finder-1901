@@ -69,29 +69,35 @@ function loadCards() {
   }
 }
 
-
 function buttonListener(e) {
   var favoriteBtnEl = document.querySelector('#favorite-btn');
-  photoTargeter(e);
-
+  var targetImage;
   if(e.target.id == favoriteBtnEl.id) {
     favoriteCards(e);
   } 
 }
 
+
 function favoriteCards(e) {
-  var newPhoto = e.target.parentElement.parentElement.parentElement.id;
-  images[0].favorited = false;
+  photoTargeter(e);
+  var i = images.indexOf(targetImage[0]);
+  var newPhoto = new Photo(images[i].id, images[i].title, images[i].caption, images[i].favorited);
+  newPhoto.favorited = true;
+  images.splice(i, 1, newPhoto);
+  console.log(images);
+  newPhoto.saveToStorage();
+  
 
 }
 
 function photoTargeter(e) {
   images = JSON.parse(localStorage.getItem('images'))
+  var articleTarget = e.target.closest('article');
   targetImage = images.filter(function(item) {
-  targetImage = e.target.closest('article');
-  return targetImage.getAttribute('data-id');  
-  })[0]
+    return item.id === parseInt(articleTarget.getAttribute('data-id'));
+  })
 }
+
 
 // function appendPhotos() {
 //   imagesArr.forEach(function (photo) {

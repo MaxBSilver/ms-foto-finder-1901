@@ -131,6 +131,10 @@ button {
   width: 100%;
 }
 
+.favorite-btn {
+  width: 250px;
+}
+
 .btn-container {
   display:flex;
   flex-direction: column;
@@ -198,11 +202,11 @@ h2 {
   justify-content: space-between;
   align-items: center;
   background-color: #584547;
-  height:25%;
+  height: 40%;
 }
 
 .icon-styling {
-  width: 25px;
+  width: 50px;
 }
 
 /* Media Queries */
