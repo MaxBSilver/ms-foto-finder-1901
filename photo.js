@@ -4,6 +4,7 @@ class Photo {
     this.title = title;
     this.caption = caption;
     this.favorited = false;
+    this.saveToStorage();
   }
 
   saveToStorage() {
@@ -12,7 +13,6 @@ class Photo {
   }
 
   updateStorage(i, newPhoto) {
-    images.splice(i, 1, newPhoto);
     localStorage.setItem('images', JSON.stringify(images));
   }
 }
