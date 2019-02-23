@@ -4,11 +4,12 @@ var titleInputEl = document.querySelector('#title-input');
 var addToAlbumEl = document.querySelector('.add-to-album-btn');
 var captionInputEl = document.querySelector('#caption-input');
 var chooseFileBtnEl = document.querySelector('.choose-file-btn');
+var imageArr = JSON.parse(localStorage.getItem('images')) || [];
 var mainEl = document.querySelector('main');
-var images = JSON.parse(localStorage.getItem('photos')) || [];
+var images = JSON.parse(localStorage.getItem('images')) || [];
 // var reader = new FileReader();
 /* Event Listeners */
-// window.addEventListener('load', appendPhotos);
+window.addEventListener('load', loadCards);
 addToAlbumEl.addEventListener('click', addToAlbum);
 
 /* Functions */
@@ -51,6 +52,20 @@ function clearInputs() {
   captionInputEl.value = '';
 }
 
+function loadCards() {
+  console.log(imageArr)
+  if(imageArr == []){
+    return false;
+  }
+    else {
+    i = 0;
+    imageArr = JSON.parse(localStorage.images);
+    imageArr.forEach(function(){
+    generateCard(imageArr[i].id, imageArr[i].title, imageArr[i].caption);
+    i++;
+  })
+  }
+}
 // function appendPhotos() {
 //   imagesArr.forEach(function (photo) {
 //   photoGallery.innerHTML += `<img src=${photo.file} />`
