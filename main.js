@@ -7,7 +7,7 @@ var chooseFileBtnEl = document.querySelector('.choose-file-btn');
 var favBtnEl = document.querySelector('.favorite-btn');
 var viewFavoritesBtnEl = document.querySelector('.view-favorites-btn');
 var searchInputEl = document.querySelector('#search');
-var searchBtnEl = document.querySelector('.search-btn')
+var searchBtnEl = document.querySelector('.search-btn');
 var mainEl = document.querySelector('main');
 var images;
 // var reader = new FileReader();
@@ -17,8 +17,8 @@ window.addEventListener('load', loadFromStorage);
 addToAlbumEl.addEventListener('click', addToAlbum);
 searchBtnEl.addEventListener('click', searchCards);
 viewFavoritesBtnEl.addEventListener('click', viewFavorites);
-// favoriteBtnEl.addEventListener('click', favoriteCards);
-mainEl.addEventListener('click', buttonListener)
+mainEl.addEventListener('click', buttonListener);
+
 
 /* Functions */
 
@@ -46,7 +46,7 @@ function generateCard(id, title, caption) {
         <p>${caption}</p>
       </section>
       <section class="photo-btns">
-        <button id="trash-btn" class="trash-btn"><img class="icon-styling" src="./fotofinder-assets/delete.svg" alt="Delete Icon"></button>
+        <button id="trash-btn" class="trash-btn"></button>
         <button id="favorite-btn" class="favorite-btn"></button>
       </section>
     </article>`
@@ -96,20 +96,39 @@ function loadFromStorage(e) {
   }
 }
 
+
 /* -- button functions -- */
 
 function buttonListener(e) {
   var favoriteBtnEl = document.querySelector('#favorite-btn');
+  var trashBtnEl = document.querySelector('#trash-btn');
   var targetImage;
   if(e.target.id == favoriteBtnEl.id) {
     photoTargeter(e);
     favoriteCards(e);
   } 
+  else if(e.target.id == trashBtnEl.id){
+    photoTargeter(e);
+    deleteCards(e);
+  }
 }
 
 function addToAlbum (event) {
   event.preventDefault();
+  console.log(images);
   create();
+}
+
+function deleteCards(e) { 
+  var i = images.indexOf(targetImage[0]);
+  var newPhoto = new Photo(images[i].id, images[i].title, images[i].caption, images[i].favorited);
+  images.splice(i, 1);
+  newPhoto.updateStorage();
+  newPhoto.saveToStorage();
+  mainEl.innerHTML = '';
+  loadFromNew(images);
+  console.log(newPhoto);
+  console.log(images);
 }
 
 function favoriteCards(e) {

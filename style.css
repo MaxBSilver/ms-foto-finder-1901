@@ -133,6 +133,18 @@ button {
   width: 100%;
 }
 
+.trash-btn {
+  width: 65px;
+  height: 65px;
+  background-image: url("./fotofinder-assets/delete.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.trash-btn:hover {
+  background-image: url("./fotofinder-assets/delete-active.svg");
+}
+
 .favorite-btn {
   width: 65px;
   height: 65px;
@@ -162,6 +174,7 @@ button {
 main {
   background-color: #C2B2B4;
   height: 100%;
+  min-height: 60vh;
   border: 1px #C2B2B4 solid;
   display: flex;
   flex-wrap: wrap;

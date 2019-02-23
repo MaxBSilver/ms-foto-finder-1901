@@ -6,7 +6,6 @@ class Photo {
     this.favorited = false;
     this.saveToStorage();
   }
-
   saveToStorage() {
     var stringifiedPhotos = JSON.stringify(images);
     localStorage.setItem('images', stringifiedPhotos);
