@@ -45,7 +45,7 @@ function generateCard(id, title, caption) {
       </section>
       <section class="photo-btns">
         <button id="trash-btn" class="trash-btn"><img class="icon-styling" src="./fotofinder-assets/delete.svg" alt="Delete Icon"></button>
-        <button id="favorite-btn" class="favorite-btn"><img class="icon-styling" src="./fotofinder-assets/favorite.svg" alt="Favorite Icon"></button>
+        <button id="favorite-btn" class="favorite-btn"></button>
       </section>
     </article>`
     mainEl.insertAdjacentHTML('afterbegin', card);
@@ -67,7 +67,7 @@ function loadCards(e) {
     generateCard(images[i].id, images[i].title, images[i].caption);
     if(images[i].favorited === true){ 
     var fav = document.querySelector('.favorite-btn');
-    fav.classList.add('red-background');
+    fav.classList.add('favorite-btn-active');
     }
     i++;
   })
@@ -90,10 +90,11 @@ function favoriteCards(e) {
   var newPhoto = new Photo(images[i].id, images[i].title, images[i].caption, images[i].favorited);
   if(images[i].favorited === false){
     newPhoto.favorited = true;
-    e.target.classList.add('red-background');
+    console.log(e.target)
+    e.target.classList.add('favorite-btn-active');
   } 
   else {
-    e.target.classList.remove('red-background')
+    e.target.classList.remove('favorite-btn-active')
   }
   images.splice(i, 1, newPhoto);
   newPhoto.updateStorage();

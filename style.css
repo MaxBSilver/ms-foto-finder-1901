@@ -134,7 +134,15 @@ button {
 }
 
 .favorite-btn {
-  width: 250px;
+  width: 65px;
+  height: 65px;
+  background-image: url("./fotofinder-assets/favorite.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.favorite-btn-active {
+  background-image: url("./fotofinder-assets/favorite-active.svg");
 }
 
 .btn-container {
