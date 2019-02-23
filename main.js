@@ -8,6 +8,7 @@ var favBtnEl = document.querySelector('.favorite-btn');
 var viewFavoritesBtnEl = document.querySelector('.view-favorites-btn');
 var searchInputEl = document.querySelector('#search');
 var searchBtnEl = document.querySelector('.search-btn');
+var emptyEl = document.querySelector('.empty')
 var mainEl = document.querySelector('main');
 var images;
 // var reader = new FileReader();
@@ -16,6 +17,7 @@ var images;
 window.addEventListener('load', loadFromStorage);
 addToAlbumEl.addEventListener('click', addToAlbum);
 searchBtnEl.addEventListener('click', searchCards);
+searchInputEl.addEventListener('keyup', searchCards);
 viewFavoritesBtnEl.addEventListener('click', viewFavorites);
 mainEl.addEventListener('click', buttonListener);
 
@@ -27,10 +29,12 @@ function create() {
    var cardId = Date.now();
    var titleInputVal = titleInputEl.value;
    var captionInputVal = captionInputEl.value;
-   var newPhoto = new Photo(cardId, titleInputVal, captionInputVal);
-   images.push(newPhoto);
-   generateCard(cardId, titleInputVal, captionInputVal);
-   newPhoto.saveToStorage();
+   if(captionInputVal && titleInputVal != ''){
+    var newPhoto = new Photo(cardId, titleInputVal, captionInputVal);
+    images.push(newPhoto);
+    generateCard(cardId, titleInputVal, captionInputVal);
+    newPhoto.saveToStorage();
+   }
 }
 
 function generateCard(id, title, caption) {
@@ -63,13 +67,10 @@ function clearInputs() {
 
 function loadFromNew(images) {
   images;
-  if(images.length == 0){
-    return false;
-  }
-    else {
+  if(images.length != 0){
     i = 0;
     images.forEach(function(){
-    displayCards(images)
+    displayCards(images);
     })
   }
 }
@@ -82,16 +83,23 @@ function displayCards(images) {
   i++;
 }
 
+function emptyMessage(images){
+  if(images.length == 0) {
+    emptyEl.classList.remove('hidden');
+  }
+  else {
+    emptyEl.classList.add('hidden');
+  }
+}
+
 function loadFromStorage(e) {
   images = JSON.parse(localStorage.getItem('images')) || [];
-  if(images.length == 0){
-    return false;
-  }
-    else {
+  emptyMessage(images);
+  if(images.length != 0){
     i = 0;
     images = JSON.parse(localStorage.images);
     images.forEach(function(){
-    displayCards(images)
+      displayCards(images)
     })
   }
 }
@@ -110,13 +118,14 @@ function buttonListener(e) {
   else if(e.target.id == trashBtnEl.id){
     photoTargeter(e);
     deleteCards(e);
+    emptyMessage(images);
   }
 }
 
 function addToAlbum (event) {
   event.preventDefault();
-  console.log(images);
   create();
+  emptyMessage(images);
 }
 
 function deleteCards(e) { 
@@ -127,8 +136,7 @@ function deleteCards(e) {
   newPhoto.saveToStorage();
   mainEl.innerHTML = '';
   loadFromNew(images);
-  console.log(newPhoto);
-  console.log(images);
+
 }
 
 function favoriteCards(e) {

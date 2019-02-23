@@ -4,8 +4,11 @@ class Photo {
     this.title = title;
     this.caption = caption;
     this.favorited = false;
+    this.file = '';
     this.saveToStorage();
+
   }
+  
   saveToStorage() {
     var stringifiedPhotos = JSON.stringify(images);
     localStorage.setItem('images', stringifiedPhotos);
