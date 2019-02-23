@@ -3,7 +3,9 @@ class Photo {
     this.id = id;
     this.title = title;
     this.caption = caption;
+    this.favorited = false;
   }
+  
   saveToStorage() {
     var stringifiedPhotos = JSON.stringify(images);
     localStorage.setItem('images', stringifiedPhotos);

@@ -76,18 +76,12 @@ h1 {
   border-radius: 0px 5px 5px 0;
 }
 
-.fa-search {
-
-}
-
 .search-wrapper {
   height: 35px;
   width: 30%;
   display:inline-flex;
   max-width: 300px;
-
 }
-
 
 /* -- Header --*/
 
@@ -168,11 +162,12 @@ main {
   border: #938284 1px solid;
   background-color: white;
   min-width: 200px;
+  max-height: 400px;
 }
 
 h2 {
   font-size: 15px;
-  height: 35px;
+  height: 10%;
   margin: 0 5px;
   display:flex;
   align-items:center;
@@ -183,15 +178,15 @@ h2 {
   font-size: 12px;
   margin: 0 5px;
   color: #3E2A35;
-  height:100px;
+  height: 30%;
 }
 
 .photo-img-wrapper {
-  height: 115px;
+  height: 35%;
 }
 
 .photo-img {
-  height:40%;
+  height:35%;
   min-height: 300px;
   width:100%;
   background-position: contain;
@@ -203,7 +198,7 @@ h2 {
   justify-content: space-between;
   align-items: center;
   background-color: #584547;
-  height:40px;
+  height:25%;
 }
 
 .icon-styling {

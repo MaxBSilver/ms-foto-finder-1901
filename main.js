@@ -4,13 +4,15 @@ var titleInputEl = document.querySelector('#title-input');
 var addToAlbumEl = document.querySelector('.add-to-album-btn');
 var captionInputEl = document.querySelector('#caption-input');
 var chooseFileBtnEl = document.querySelector('.choose-file-btn');
-var imageArr = JSON.parse(localStorage.getItem('images')) || [];
-var mainEl = document.querySelector('main');
 var images = JSON.parse(localStorage.getItem('images')) || [];
+var mainEl = document.querySelector('main');
 // var reader = new FileReader();
+
 /* Event Listeners */
 window.addEventListener('load', loadCards);
 addToAlbumEl.addEventListener('click', addToAlbum);
+// favoriteBtnEl.addEventListener('click', favoriteCards);
+mainEl.addEventListener('click', buttonListener)
 
 /* Functions */
 
@@ -30,18 +32,19 @@ function create() {
 
 function generateCard(id, title, caption) {
   event.preventDefault();
-  var card = `<article class="photo" id=${id}>
+  var card = `<article class="photo" data-id=${id}>
       <section class="photo-title">
         <h2>${title}</h2>
       </section>
       <section class="photo-img-wrapper">
         <img class ="photo-img" src="">
+      </section>
       <section class="photo-caption">
         <p>${caption}</p>
       </section>
       <section class="photo-btns">
-        <button class="trash-btn"><img class="icon-styling" src="./fotofinder-assets/delete.svg" alt="Delete Icon"></button>
-        <button class="favorite-btn"><img class="icon-styling" src="./fotofinder-assets/favorite.svg" alt="Favorite Icon"></button>
+        <button id="trash-btn" class="trash-btn"><img class="icon-styling" src="./fotofinder-assets/delete.svg" alt="Delete Icon"></button>
+        <button id="favorite-btn" class="favorite-btn"><img class="icon-styling" src="./fotofinder-assets/favorite.svg" alt="Favorite Icon"></button>
       </section>
     </article>`
     mainEl.insertAdjacentHTML('afterbegin', card);
@@ -53,19 +56,43 @@ function clearInputs() {
 }
 
 function loadCards() {
-  console.log(imageArr)
-  if(imageArr == []){
+  if(images.length == 0){
     return false;
   }
     else {
     i = 0;
-    imageArr = JSON.parse(localStorage.images);
-    imageArr.forEach(function(){
-    generateCard(imageArr[i].id, imageArr[i].title, imageArr[i].caption);
+    images = JSON.parse(localStorage.images);
+    images.forEach(function(){
+    generateCard(images[i].id, images[i].title, images[i].caption);
     i++;
   })
   }
 }
+
+
+function buttonListener(e) {
+  var favoriteBtnEl = document.querySelector('#favorite-btn');
+  photoTargeter(e);
+
+  if(e.target.id == favoriteBtnEl.id) {
+    favoriteCards(e);
+  } 
+}
+
+function favoriteCards(e) {
+  var newPhoto = e.target.parentElement.parentElement.parentElement.id;
+  images[0].favorited = false;
+
+}
+
+function photoTargeter(e) {
+  images = JSON.parse(localStorage.getItem('images'))
+  targetImage = images.filter(function(item) {
+  targetImage = e.target.closest('article');
+  return targetImage.getAttribute('data-id');  
+  })[0]
+}
+
 // function appendPhotos() {
 //   imagesArr.forEach(function (photo) {
 //   photoGallery.innerHTML += `<img src=${photo.file} />`
