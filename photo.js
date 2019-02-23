@@ -12,7 +12,6 @@ class Photo {
   }
 
   updateStorage(i, newPhoto) {
-    images.splice(i, 1, newPhoto);
     localStorage.setItem('images', JSON.stringify(images));
   }
 }

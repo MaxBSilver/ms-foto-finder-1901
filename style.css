@@ -22,7 +22,9 @@ button {
 header button:hover {
   background-color:#938284;
 }
-
+.red-background {
+  background-color: red;
+}
 /* -- Nav -- */
 
 nav {
