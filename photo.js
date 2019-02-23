@@ -4,6 +4,7 @@ class Photo {
     this.title = title;
     this.caption = caption;
     this.favorited = false;
+    this.saveToStorage();
   }
 
   saveToStorage() {
