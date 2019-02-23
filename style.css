@@ -161,7 +161,7 @@ button {
 
 main {
   background-color: #C2B2B4;
-  height: 60vh;
+  height: 100%;
   border: 1px #C2B2B4 solid;
   display: flex;
   flex-wrap: wrap;

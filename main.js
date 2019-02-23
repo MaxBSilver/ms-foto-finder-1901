@@ -77,7 +77,7 @@ function displayCards(images) {
   generateCard(images[i].id, images[i].title, images[i].caption);
   if(images[i].favorited === true){ 
   var fav = document.querySelector('.favorite-btn');
-  fav.classList.add('red-background');
+  fav.classList.add('favorite-btn-active');
   }
   i++;
 }
@@ -91,17 +91,8 @@ function loadFromStorage(e) {
     i = 0;
     images = JSON.parse(localStorage.images);
     images.forEach(function(){
-<<<<<<< HEAD
-    generateCard(images[i].id, images[i].title, images[i].caption);
-    if(images[i].favorited === true){ 
-    var fav = document.querySelector('.favorite-btn');
-    fav.classList.add('favorite-btn-active');
-    }
-=======
-    displayCards(images);
+    displayCards(images)
     })
->>>>>>> 93637525581f6d69bef6bae92eb68e53eb19c64d
-    i++;
   }
 }
 
@@ -126,7 +117,6 @@ function favoriteCards(e) {
   var newPhoto = new Photo(images[i].id, images[i].title, images[i].caption, images[i].favorited);
   if(images[i].favorited === false){
     newPhoto.favorited = true;
-    console.log(e.target)
     e.target.classList.add('favorite-btn-active');
   } 
   else {
