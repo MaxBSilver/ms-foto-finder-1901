@@ -1,12 +1,18 @@
 class Photo {
   constructor(id, title, caption){
     this.id = id;
-    this.title = tile;
+    this.title = title;
     this.caption = caption;
-    saveToStorage();
+    this.favorited = false;
   }
+
   saveToStorage() {
-    var stringifiedPhotos = JSON.stringify(ideas);
-    localStorage.setItem('ideas', stringifiedPhotos);
+    var stringifiedPhotos = JSON.stringify(images);
+    localStorage.setItem('images', stringifiedPhotos);
+  }
+
+  updateStorage(i, newPhoto) {
+    images.splice(i, 1, newPhoto);
+    localStorage.setItem('images', JSON.stringify(images));
   }
 }

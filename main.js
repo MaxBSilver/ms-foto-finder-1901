@@ -4,35 +4,47 @@ var titleInputEl = document.querySelector('#title-input');
 var addToAlbumEl = document.querySelector('.add-to-album-btn');
 var captionInputEl = document.querySelector('#caption-input');
 var chooseFileBtnEl = document.querySelector('.choose-file-btn');
+var images = JSON.parse(localStorage.getItem('images')) || [];
 var mainEl = document.querySelector('main');
-var imagesArr = JSON.parse(localStorage.getItem('photos')) || [];
 // var reader = new FileReader();
+
 /* Event Listeners */
-// window.addEventListener('load', appendPhotos);
-addToAlbumEl.addEventListener('click', create);
+window.addEventListener('load', loadCards);
+addToAlbumEl.addEventListener('click', addToAlbum);
+// favoriteBtnEl.addEventListener('click', favoriteCards);
+mainEl.addEventListener('click', buttonListener)
 
 /* Functions */
+
+function addToAlbum (event) {
+  event.preventDefault();
+  create();
+}
 function create() {
    var cardId = Date.now();
-   var cardTitleVal = titleInputEl.value;
+   var titleInputVal = titleInputEl.value;
    var captionInputVal = captionInputEl.value;
-   generateCard(cardId, cardTitleVal, captionInputVal);
+   var newPhoto = new Photo(cardId, titleInputVal, captionInputVal);
+   images.push(newPhoto);
+   generateCard(cardId, titleInputVal, captionInputVal);
+   newPhoto.saveToStorage();
 }
 
 function generateCard(id, title, caption) {
   event.preventDefault();
-  var card = `<article class="photo" id=${id}>
+  var card = `<article class="photo" data-id=${id}>
       <section class="photo-title">
         <h2>${title}</h2>
       </section>
       <section class="photo-img-wrapper">
         <img class ="photo-img" src="">
+      </section>
       <section class="photo-caption">
         <p>${caption}</p>
       </section>
       <section class="photo-btns">
-        <button class="trash-btn"><img class="icon-styling" src="./fotofinder-assets/delete.svg" alt="Delete Icon"></button>
-        <button class="favorite-btn"><img class="icon-styling" src="./fotofinder-assets/favorite.svg" alt="Favorite Icon"></button>
+        <button id="trash-btn" class="trash-btn"><img class="icon-styling" src="./fotofinder-assets/delete.svg" alt="Delete Icon"></button>
+        <button id="favorite-btn" class="favorite-btn"><img class="icon-styling" src="./fotofinder-assets/favorite.svg" alt="Favorite Icon"></button>
       </section>
     </article>`
     mainEl.insertAdjacentHTML('afterbegin', card);
@@ -42,6 +54,50 @@ function clearInputs() {
   titleInputEl.value = '';
   captionInputEl.value = '';
 }
+
+function loadCards() {
+  if(images.length == 0){
+    return false;
+  }
+    else {
+    i = 0;
+    images = JSON.parse(localStorage.images);
+    images.forEach(function(){
+    generateCard(images[i].id, images[i].title, images[i].caption);
+    i++;
+  })
+  }
+}
+
+function buttonListener(e) {
+  var favoriteBtnEl = document.querySelector('#favorite-btn');
+  var targetImage;
+  if(e.target.id == favoriteBtnEl.id) {
+    favoriteCards(e);
+  } 
+}
+
+
+function favoriteCards(e) {
+  photoTargeter(e);
+  var i = images.indexOf(targetImage[0]);
+  var newPhoto = new Photo(images[i].id, images[i].title, images[i].caption, images[i].favorited);
+  newPhoto.favorited = true;
+  images.splice(i, 1, newPhoto);
+  console.log(images);
+  newPhoto.saveToStorage();
+  
+
+}
+
+function photoTargeter(e) {
+  images = JSON.parse(localStorage.getItem('images'))
+  var articleTarget = e.target.closest('article');
+  targetImage = images.filter(function(item) {
+    return item.id === parseInt(articleTarget.getAttribute('data-id'));
+  })
+}
+
 
 // function appendPhotos() {
 //   imagesArr.forEach(function (photo) {
