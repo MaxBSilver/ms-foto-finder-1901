@@ -71,8 +71,8 @@ function clearInputs() {
 
 function loadFromNew(images) {
   images;
-  if(images.length != 0){
-    i = 0;
+  i = 0;
+  if(images.length != 0 && images.length > 10){
     let arrLength = parseInt(images.length);
     let arrLengthMax = parseInt(images.length - 10);
     images = images.slice(arrLengthMax, arrLength);
@@ -80,7 +80,12 @@ function loadFromNew(images) {
     displayCards(images);
     })
   }
-}
+    else if(images.length !=0 && images.length <  10){
+      images.forEach(function(){
+      displayCards(images);
+      })
+    }
+  }
 
 function displayCards(images) {
   generateCard(images[i].id, images[i].title, images[i].caption);
@@ -217,20 +222,6 @@ function searchChecker() {
     })
       searchCards(favoritedImages);
   }
-}
-
-function searchFavorites() {
-  var searchInputVal = searchInputEl.value;
-  var searchQuery = searchInputVal.toLowerCase();
-  var searchResults = [];
-  console.log(images);
-  images.forEach(image => {
-    if(image.title.toLowerCase().includes(searchQuery) || image.caption.toLowerCase().includes(searchQuery)){
-      searchResults.push(image)
-    }
-      mainEl.innerHTML ='';
-      loadFromNew(searchResults);
-  })
 }
 
 function searchCards(images) {
