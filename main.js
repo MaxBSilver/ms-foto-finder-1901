@@ -21,6 +21,9 @@ searchInputEl.addEventListener('keyup', searchCards);
 viewFavoritesBtnEl.addEventListener('click', viewFavorites);
 mainEl.addEventListener('click', buttonListener);
 
+/* only temp */
+chooseFileBtnEl.addEventListener('click', showMore);
+
 
 /* Functions */
 
@@ -69,12 +72,15 @@ function loadFromNew(images) {
   images;
   if(images.length != 0){
     i = 0;
-    images = images.slice(0, 10);
+    let arrLength = parseInt(images.length);
+    let arrLengthMax = parseInt(images.length - 10);
+    images = images.slice(arrLengthMax, arrLength);
     images.forEach(function(){
     displayCards(images);
     })
   }
 }
+
 function displayCards(images) {
   generateCard(images[i].id, images[i].title, images[i].caption);
   if(images[i].favorited === true){ 
@@ -126,13 +132,20 @@ function buttonListener(e) {
   }
 }
 
+function showMore() {
+  mainEl.innerHTML = '';
+  images = JSON.parse(localStorage.getItem('images')) || [];
+  i = 0;
+  images.forEach(function(){
+      displayCards(images);
+  
+  })
+}
+
 function addToAlbum (event) {
   event.preventDefault();
   create();
   emptyMessage(images);
-  if(images.length > 10) {
-
-  }
 }
 
 function deleteCards(e) { 
