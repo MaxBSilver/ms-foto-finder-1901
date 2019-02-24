@@ -69,6 +69,7 @@ function loadFromNew(images) {
   images;
   if(images.length != 0){
     i = 0;
+    images = images.slice(0, 10);
     images.forEach(function(){
     displayCards(images);
     })
@@ -98,8 +99,11 @@ function loadFromStorage(e) {
   if(images.length != 0){
     i = 0;
     images = JSON.parse(localStorage.images);
+    let arrLength = parseInt(images.length);
+    let arrLengthMax = parseInt(images.length - 10);
+    images = images.slice(arrLengthMax, arrLength);
     images.forEach(function(){
-      displayCards(images)
+      displayCards(images);
     })
   }
 }
@@ -126,6 +130,9 @@ function addToAlbum (event) {
   event.preventDefault();
   create();
   emptyMessage(images);
+  if(images.length > 10) {
+
+  }
 }
 
 function deleteCards(e) { 
