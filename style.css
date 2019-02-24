@@ -247,7 +247,7 @@ p {
 
 .photo-img {
   height:35%;
-  min-height: 300px;
+  min-height: 120px;
   width:100%;
   background-position: contain;
 }

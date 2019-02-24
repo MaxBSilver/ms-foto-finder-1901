@@ -11,10 +11,11 @@ var searchBtnEl = document.querySelector('.search-btn');
 var emptyEl = document.querySelector('.empty')
 var mainEl = document.querySelector('main');
 var showMoreBtnEl = document.querySelector('.show-more-btn');
-// var fileBtnEl = document.querySelector('.file-btn');
 var fileInputEl = document.querySelector('.file-input');
-
+var photoImgEl = document.querySelector('photo-img');
 var images;
+var reader = new FileReader();
+var savedPhoto;
 
 // var reader = new FileReader();
 
@@ -30,39 +31,57 @@ fileInputEl.addEventListener('change', chooseFile);
 
 
 /* Functions */
-function chooseFile(){
- console.log(fileInputEl.value)
-}
-// function loadImg() {
-//   console.log(input.files[0])
-//   if (input.files[0]) {
-//     reader.readAsDataURL(input.files[0]); 
-//     reader.onload = addPhoto
-//   }
+
+// function appendPhotos() {
+//   imagesArr.forEach(function (photo) {
+//   photoGallery.innerHTML += `<img src=${photo.file} />`
+//   })
 // }
+
+function chooseFile(){
+ var file = document.querySelector('.file-input').files[0];
+ if (file){
+    reader.readAsDataURL(file);
+    reader.onloadend = create;
+  }
+}
+
+function addPhoto(e) {
+ return e.target.result;
+}
 
 
 /* Create Card */
-function create() {
+function create(e) {
    var cardId = Date.now();
    var titleInputVal = titleInputEl.value;
    var captionInputVal = captionInputEl.value;
-   if(captionInputVal && titleInputVal != ''){
-    var newPhoto = new Photo(cardId, titleInputVal, captionInputVal);
+   var fileVal = addPhoto(e);
+   var newPhoto = new Photo(cardId, titleInputVal, captionInputVal, fileVal);
+    if(newPhoto.title && newPhoto.caption != ''){
     images.push(newPhoto);
-    generateCard(cardId, titleInputVal, captionInputVal);
+  }
     newPhoto.saveToStorage();
-   }
 }
 
-function generateCard(id, title, photo, caption) {
+
+//remove global variable for savedIdeas
+function displayCreate(images){
+  console.log(captionInputEl.value)
+   if(captionInputEl.value && titleInputEl.value != ''){
+    i = images.length - 1;
+    generateCard(images[i].id, images[i].title, images[i].caption, images[i].file);
+  }
+}
+
+function generateCard(id, title, caption, file) {
   event.preventDefault();
   var card = `<article class="photo" data-id=${id}>
       <section class="photo-title">
         <h2>${title}</h2>
       </section>
       <section class="photo-img-wrapper">
-        <img class ="photo-img" src="">
+        <img class ="photo-img" src='${file}'>
       </section>
       <section class="photo-caption">
         <p>${caption}</p>
@@ -102,7 +121,7 @@ function loadFromNew(images) {
   }
 
 function displayCards(images) {
-  generateCard(images[i].id, images[i].title, images[i].caption);
+  generateCard(images[i].id, images[i].title, images[i].caption, images[i].file);
   if(images[i].favorited === true){ 
   var fav = document.querySelector('.favorite-btn');
   fav.classList.add('favorite-btn-active');
@@ -170,13 +189,13 @@ function showMore() {
 
 function addToAlbum (event) {
   event.preventDefault();
-  create();
+  displayCreate(images);
   emptyMessage(images);
 }
 
 function deleteCards(e) { 
   var i = images.indexOf(targetImage[0]);
-  var newPhoto = new Photo(images[i].id, images[i].title, images[i].caption, images[i].favorited);
+  var newPhoto = new Photo(images[i].id, images[i].title, images[i].caption, images[i].file, images[i].favorited);
   images.splice(i, 1);
   newPhoto.updateStorage();
   newPhoto.saveToStorage();
@@ -186,7 +205,7 @@ function deleteCards(e) {
 
 function favoriteCards(e) {
   var i = images.indexOf(targetImage[0]);
-  var newPhoto = new Photo(images[i].id, images[i].title, images[i].caption, images[i].favorited);
+  var newPhoto = new Photo(images[i].id, images[i].title, images[i].caption, images[i].file, images[i].favorited);
   if(images[i].favorited === false){
     newPhoto.favorited = true;
     e.target.classList.add('favorite-btn-active');
