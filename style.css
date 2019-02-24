@@ -174,10 +174,27 @@ button {
 .choose-file-btn,
 .show-more-btn,
 .bottom-btns,
-.btn-container {
+.btn-container,
+.file-input {
   max-width: 500px;
   min-width: 300px;
 }
+
+.file-btn {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.file-btn:hover > .choose-file-btn{
+  background-color:#938284;
+
+}
+
+.file-input {
+  position: absolute;
+  opacity: 0;
+}
+
 /* -- Main --*/
 
 main {

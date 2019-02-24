@@ -20,13 +20,19 @@
       <section class="btn-container">
         <label for="title-input">Title</label>
         <input id ="title-input"type="text"> 
+      <section class="photo-uploader hidden">
+      </section>
       </section>
       <section class="btn-container">
        <label for="caption-input">Caption</label>
        <input id="caption-input" type="text">
       </section>
-      <button class="foto-btn choose-file-btn">Choose File</button>
-      <section class="bottom-btns">
+        <div class="file-btn">
+          <input class="foto-btn file-input" accept="image/png, image/jpeg, image/svg" type="file">
+          <img src="">
+          <button class="foto-btn choose-file-btn">Choose File</button>
+        </div>
+        <section class="bottom-btns">
         <button class="view-favorites-btn foto-btn">View Favorites</button>
         <button class="add-to-album-btn foto-btn">Add to Album</button>
       </section>

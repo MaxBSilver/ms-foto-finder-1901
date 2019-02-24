@@ -10,8 +10,12 @@ var searchInputEl = document.querySelector('#search');
 var searchBtnEl = document.querySelector('.search-btn');
 var emptyEl = document.querySelector('.empty')
 var mainEl = document.querySelector('main');
-var showMoreBtnEl = document.querySelector('.show-more-btn')
+var showMoreBtnEl = document.querySelector('.show-more-btn');
+// var fileBtnEl = document.querySelector('.file-btn');
+var fileInputEl = document.querySelector('.file-input');
+
 var images;
+
 // var reader = new FileReader();
 
 /* Event Listeners */
@@ -21,12 +25,22 @@ searchBtnEl.addEventListener('click', searchCards);
 searchInputEl.addEventListener('keyup', searchChecker);
 viewFavoritesBtnEl.addEventListener('click', viewFavoriteToggle);
 mainEl.addEventListener('click', buttonListener);
-
-/* only temp */
 showMoreBtnEl.addEventListener('click', showMore);
+fileInputEl.addEventListener('change', chooseFile);
 
 
 /* Functions */
+function chooseFile(){
+ console.log(fileInputEl.value)
+}
+// function loadImg() {
+//   console.log(input.files[0])
+//   if (input.files[0]) {
+//     reader.readAsDataURL(input.files[0]); 
+//     reader.onload = addPhoto
+//   }
+// }
+
 
 /* Create Card */
 function create() {
@@ -41,7 +55,7 @@ function create() {
    }
 }
 
-function generateCard(id, title, caption) {
+function generateCard(id, title, photo, caption) {
   event.preventDefault();
   var card = `<article class="photo" data-id=${id}>
       <section class="photo-title">
