@@ -7,7 +7,8 @@ var chooseFileBtnEl = document.querySelector('.choose-file-btn');
 var favBtnEl = document.querySelector('.favorite-btn');
 var viewFavoritesBtnEl = document.querySelector('.view-favorites-btn');
 var searchInputEl = document.querySelector('#search');
-var searchBtnEl = document.querySelector('.search-btn')
+var searchBtnEl = document.querySelector('.search-btn');
+var emptyEl = document.querySelector('.empty')
 var mainEl = document.querySelector('main');
 var images;
 // var reader = new FileReader();
@@ -16,9 +17,10 @@ var images;
 window.addEventListener('load', loadFromStorage);
 addToAlbumEl.addEventListener('click', addToAlbum);
 searchBtnEl.addEventListener('click', searchCards);
+searchInputEl.addEventListener('keyup', searchCards);
 viewFavoritesBtnEl.addEventListener('click', viewFavorites);
-// favoriteBtnEl.addEventListener('click', favoriteCards);
-mainEl.addEventListener('click', buttonListener)
+mainEl.addEventListener('click', buttonListener);
+
 
 /* Functions */
 
@@ -27,10 +29,12 @@ function create() {
    var cardId = Date.now();
    var titleInputVal = titleInputEl.value;
    var captionInputVal = captionInputEl.value;
-   var newPhoto = new Photo(cardId, titleInputVal, captionInputVal);
-   images.push(newPhoto);
-   generateCard(cardId, titleInputVal, captionInputVal);
-   newPhoto.saveToStorage();
+   if(captionInputVal && titleInputVal != ''){
+    var newPhoto = new Photo(cardId, titleInputVal, captionInputVal);
+    images.push(newPhoto);
+    generateCard(cardId, titleInputVal, captionInputVal);
+    newPhoto.saveToStorage();
+   }
 }
 
 function generateCard(id, title, caption) {
@@ -46,8 +50,8 @@ function generateCard(id, title, caption) {
         <p>${caption}</p>
       </section>
       <section class="photo-btns">
-        <button id="trash-btn" class="trash-btn"><img class="icon-styling" src="./fotofinder-assets/delete.svg" alt="Delete Icon"></button>
-        <button id="favorite-btn" class="favorite-btn"><img class="icon-styling" src="./fotofinder-assets/favorite.svg" alt="Favorite Icon"></button>
+        <button id="trash-btn" class="trash-btn"></button>
+        <button id="favorite-btn" class="favorite-btn"></button>
       </section>
     </article>`
     mainEl.insertAdjacentHTML('afterbegin', card);
@@ -63,13 +67,10 @@ function clearInputs() {
 
 function loadFromNew(images) {
   images;
-  if(images.length == 0){
-    return false;
-  }
-    else {
+  if(images.length != 0){
     i = 0;
     images.forEach(function(){
-    displayCards(images)
+    displayCards(images);
     })
   }
 }
@@ -77,40 +78,65 @@ function displayCards(images) {
   generateCard(images[i].id, images[i].title, images[i].caption);
   if(images[i].favorited === true){ 
   var fav = document.querySelector('.favorite-btn');
-  fav.classList.add('red-background');
+  fav.classList.add('favorite-btn-active');
   }
   i++;
 }
 
+function emptyMessage(images){
+  if(images.length == 0) {
+    emptyEl.classList.remove('hidden');
+  }
+  else {
+    emptyEl.classList.add('hidden');
+  }
+}
+
 function loadFromStorage(e) {
   images = JSON.parse(localStorage.getItem('images')) || [];
-  if(images.length == 0){
-    return false;
-  }
-    else {
+  emptyMessage(images);
+  if(images.length != 0){
     i = 0;
     images = JSON.parse(localStorage.images);
     images.forEach(function(){
-    displayCards(images);
+      displayCards(images)
     })
-    i++;
   }
 }
+
 
 /* -- button functions -- */
 
 function buttonListener(e) {
   var favoriteBtnEl = document.querySelector('#favorite-btn');
+  var trashBtnEl = document.querySelector('#trash-btn');
   var targetImage;
   if(e.target.id == favoriteBtnEl.id) {
     photoTargeter(e);
     favoriteCards(e);
   } 
+  else if(e.target.id == trashBtnEl.id){
+    photoTargeter(e);
+    deleteCards(e);
+    emptyMessage(images);
+  }
 }
 
 function addToAlbum (event) {
   event.preventDefault();
   create();
+  emptyMessage(images);
+}
+
+function deleteCards(e) { 
+  var i = images.indexOf(targetImage[0]);
+  var newPhoto = new Photo(images[i].id, images[i].title, images[i].caption, images[i].favorited);
+  images.splice(i, 1);
+  newPhoto.updateStorage();
+  newPhoto.saveToStorage();
+  mainEl.innerHTML = '';
+  loadFromNew(images);
+
 }
 
 function favoriteCards(e) {
@@ -118,10 +144,10 @@ function favoriteCards(e) {
   var newPhoto = new Photo(images[i].id, images[i].title, images[i].caption, images[i].favorited);
   if(images[i].favorited === false){
     newPhoto.favorited = true;
-    e.target.classList.add('red-background');
+    e.target.classList.add('favorite-btn-active');
   } 
   else {
-    e.target.classList.remove('red-background')
+    e.target.classList.remove('favorite-btn-active')
   }
   images.splice(i, 1, newPhoto);
   newPhoto.updateStorage();
