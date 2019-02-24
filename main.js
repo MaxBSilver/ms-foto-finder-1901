@@ -18,7 +18,7 @@ var images;
 window.addEventListener('load', loadFromStorage);
 addToAlbumEl.addEventListener('click', addToAlbum);
 searchBtnEl.addEventListener('click', searchCards);
-searchInputEl.addEventListener('keyup', searchCards);
+searchInputEl.addEventListener('keyup', searchChecker);
 viewFavoritesBtnEl.addEventListener('click', viewFavoriteToggle);
 mainEl.addEventListener('click', buttonListener);
 
@@ -191,7 +191,6 @@ function viewFavoriteToggle(event) {
     loadFromNew(images);
     viewFavoritesBtnEl.innerText = 'View Favorites'
   }
-
 }
 
 function viewFavorites(event) {
@@ -205,8 +204,36 @@ function viewFavorites(event) {
   loadFromNew(favoriteList);
 }
 
-function searchCards() {
-  images = JSON.parse(localStorage.getItem('images')) || [];
+function searchChecker() {
+  var favoritedImages = [];
+  if (viewFavoritesBtnEl.innerText === 'View Favorites') {
+    searchCards(images)
+  }
+  else {
+    images.forEach(image => {
+      if(image.favorited === true){
+      favoritedImages.push(image);
+    }
+    })
+      searchCards(favoritedImages);
+  }
+}
+
+function searchFavorites() {
+  var searchInputVal = searchInputEl.value;
+  var searchQuery = searchInputVal.toLowerCase();
+  var searchResults = [];
+  console.log(images);
+  images.forEach(image => {
+    if(image.title.toLowerCase().includes(searchQuery) || image.caption.toLowerCase().includes(searchQuery)){
+      searchResults.push(image)
+    }
+      mainEl.innerHTML ='';
+      loadFromNew(searchResults);
+  })
+}
+
+function searchCards(images) {
   var searchInputVal = searchInputEl.value;
   var searchQuery = searchInputVal.toLowerCase();
   var searchResults = [];
