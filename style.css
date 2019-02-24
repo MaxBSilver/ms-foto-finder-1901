@@ -123,6 +123,8 @@ button {
 .foto-btn {
   height: 45px;
   width: 100%;
+  padding-left:10px;
+  font-size: 14px;
 }
 
 .add-to-album-btn,
