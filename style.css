@@ -172,6 +172,7 @@ button {
 }
 
 .choose-file-btn,
+.show-more-btn,
 .bottom-btns,
 .btn-container {
   max-width: 500px;

@@ -10,6 +10,7 @@ var searchInputEl = document.querySelector('#search');
 var searchBtnEl = document.querySelector('.search-btn');
 var emptyEl = document.querySelector('.empty')
 var mainEl = document.querySelector('main');
+var showMoreBtnEl = document.querySelector('.show-more-btn')
 var images;
 // var reader = new FileReader();
 
@@ -18,8 +19,11 @@ window.addEventListener('load', loadFromStorage);
 addToAlbumEl.addEventListener('click', addToAlbum);
 searchBtnEl.addEventListener('click', searchCards);
 searchInputEl.addEventListener('keyup', searchCards);
-viewFavoritesBtnEl.addEventListener('click', viewFavorites);
+viewFavoritesBtnEl.addEventListener('click', viewFavoriteToggle);
 mainEl.addEventListener('click', buttonListener);
+
+/* only temp */
+showMoreBtnEl.addEventListener('click', showMore);
 
 
 /* Functions */
@@ -69,12 +73,15 @@ function loadFromNew(images) {
   images;
   if(images.length != 0){
     i = 0;
-    images = images.slice(0, 10);
+    let arrLength = parseInt(images.length);
+    let arrLengthMax = parseInt(images.length - 10);
+    images = images.slice(arrLengthMax, arrLength);
     images.forEach(function(){
     displayCards(images);
     })
   }
 }
+
 function displayCards(images) {
   generateCard(images[i].id, images[i].title, images[i].caption);
   if(images[i].favorited === true){ 
@@ -122,7 +129,23 @@ function buttonListener(e) {
   else if(e.target.id == trashBtnEl.id){
     photoTargeter(e);
     deleteCards(e);
-    emptyMessage(images);
+    
+  }
+}
+
+function showMore() {
+  mainEl.innerHTML = '';
+  i = 0;
+  if(showMoreBtnEl.innerText === 'Show More'){
+  showMoreBtnEl.innerText = 'Show Less';
+  images = JSON.parse(localStorage.getItem('images')) || [];
+  images.forEach(function(){
+      displayCards(images);
+  })
+  }
+  else{
+    showMoreBtnEl.innerText = 'Show More';
+    loadFromStorage(images);
   }
 }
 
@@ -130,9 +153,6 @@ function addToAlbum (event) {
   event.preventDefault();
   create();
   emptyMessage(images);
-  if(images.length > 10) {
-
-  }
 }
 
 function deleteCards(e) { 
@@ -143,7 +163,6 @@ function deleteCards(e) {
   newPhoto.saveToStorage();
   mainEl.innerHTML = '';
   loadFromNew(images);
-
 }
 
 function favoriteCards(e) {
@@ -161,8 +180,21 @@ function favoriteCards(e) {
   newPhoto.saveToStorage();
 }
 
-function viewFavorites(event) {
+function viewFavoriteToggle(event) {
   event.preventDefault();
+  if (viewFavoritesBtnEl.innerText === 'View Favorites'){
+    viewFavorites();
+    viewFavoritesBtnEl.innerText = 'View All Photos';
+  }
+  else {
+    mainEl.innerHTML = '';
+    loadFromNew(images);
+    viewFavoritesBtnEl.innerText = 'View Favorites'
+  }
+
+}
+
+function viewFavorites(event) {
   images = JSON.parse(localStorage.getItem('images')) || [];
   var favoriteList = [];
   images.forEach(image => {
