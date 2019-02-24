@@ -10,6 +10,7 @@ var searchInputEl = document.querySelector('#search');
 var searchBtnEl = document.querySelector('.search-btn');
 var emptyEl = document.querySelector('.empty')
 var mainEl = document.querySelector('main');
+var showMoreBtnEl = document.querySelector('.show-more-btn')
 var images;
 // var reader = new FileReader();
 
@@ -22,7 +23,7 @@ viewFavoritesBtnEl.addEventListener('click', viewFavorites);
 mainEl.addEventListener('click', buttonListener);
 
 /* only temp */
-chooseFileBtnEl.addEventListener('click', showMore);
+showMoreBtnEl.addEventListener('click', showMore);
 
 
 /* Functions */
@@ -128,19 +129,26 @@ function buttonListener(e) {
   else if(e.target.id == trashBtnEl.id){
     photoTargeter(e);
     deleteCards(e);
-    emptyMessage(images);
+    
   }
 }
 
 function showMore() {
   mainEl.innerHTML = '';
-  images = JSON.parse(localStorage.getItem('images')) || [];
   i = 0;
+  if(showMoreBtnEl.innerText === 'Show More'){
+  showMoreBtnEl.innerText = 'Show Less';
+  images = JSON.parse(localStorage.getItem('images')) || [];
   images.forEach(function(){
       displayCards(images);
-  
   })
+  }
+  else{
+    showMoreBtnEl.innerText = 'Show More';
+    loadFromStorage(images);
+  }
 }
+
 
 function addToAlbum (event) {
   event.preventDefault();
