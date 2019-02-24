@@ -19,7 +19,7 @@ window.addEventListener('load', loadFromStorage);
 addToAlbumEl.addEventListener('click', addToAlbum);
 searchBtnEl.addEventListener('click', searchCards);
 searchInputEl.addEventListener('keyup', searchCards);
-viewFavoritesBtnEl.addEventListener('click', viewFavorites);
+viewFavoritesBtnEl.addEventListener('click', viewFavoriteToggle);
 mainEl.addEventListener('click', buttonListener);
 
 /* only temp */
@@ -149,7 +149,6 @@ function showMore() {
   }
 }
 
-
 function addToAlbum (event) {
   event.preventDefault();
   create();
@@ -164,7 +163,6 @@ function deleteCards(e) {
   newPhoto.saveToStorage();
   mainEl.innerHTML = '';
   loadFromNew(images);
-
 }
 
 function favoriteCards(e) {
@@ -182,8 +180,21 @@ function favoriteCards(e) {
   newPhoto.saveToStorage();
 }
 
-function viewFavorites(event) {
+function viewFavoriteToggle(event) {
   event.preventDefault();
+  if (viewFavoritesBtnEl.innerText === 'View Favorites'){
+    viewFavorites();
+    viewFavoritesBtnEl.innerText = 'View All Photos';
+  }
+  else {
+    mainEl.innerHTML = '';
+    loadFromNew(images);
+    viewFavoritesBtnEl.innerText = 'View Favorites'
+  }
+
+}
+
+function viewFavorites(event) {
   images = JSON.parse(localStorage.getItem('images')) || [];
   var favoriteList = [];
   images.forEach(image => {
