@@ -23,11 +23,11 @@ button:focus {
 }
 
 [contenteditable="true"]:active, 
-[contenteditable="true"]:focus
-{
+[contenteditable="true"]:focus {
    border:none;
    outline:none;
 }
+
 header button:hover {
   background-color:#938284;
 }
@@ -64,15 +64,15 @@ h1 {
 }
 
 #search {
-  width: 85%;
   border-radius: 5px 0 0 5px;
-  font-size: 14px;
-  padding-right: 20px;
-  min-width: 150px;
   border: #BFB3B4 solid 2px;
+  font-size: 14px;
   font-weight: 800;
-  padding-left: 10px;
   max-width: 500px;
+  min-width: 150px;
+  padding-left: 10px;
+  padding-right: 20px;
+  width: 85%;
 }
 
 #search::placeholder {
@@ -97,7 +97,7 @@ h1 {
 header {
   display: flex;
   justify-content: center;
-  height: 40vh;
+  height: 45vh;
   margin-bottom: 20px;
 }
 
@@ -206,7 +206,7 @@ button {
 main {
   background-color: #C2B2B4;
   height: 100%;
-  min-height: 60vh;
+  min-height: 55vh;
   border: 1px #C2B2B4 solid;
   display: flex;
   flex-wrap: wrap;

@@ -1,3 +1,5 @@
+//anything that changes photo should be in here 
+
 class Photo {
   constructor(id, title, caption, file){
     this.id = id;
