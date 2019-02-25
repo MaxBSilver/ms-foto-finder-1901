@@ -8,25 +8,51 @@
 <body>
   <nav>
     <section class="logo-wrapper">
-      <h1>FOTO<img class="logo-img" src="./fotofinder-assets/foto-finder-logo.svg" width="50px" height="50px">FINDER</h1>
+      <h1>FOTO
+        <img 
+        class="logo-img"
+        src="./fotofinder-assets/foto-finder-logo.svg" 
+        />
+      FINDER</h1>
     </section>
     <section class="search-wrapper">
-      <input type="text" id="search" placeholder="Search">
-      <button class="search-btn"><i class="fa fa-search" aria-hidden="true"></i></button>
+      <input 
+        type="text" 
+        id="search" 
+        placeholder="Search"
+      />
+      <button class="search-btn">
+        <i class="fa fa-search" aria-hidden="true"></i></button>
     </section>
   </nav>
   <header>
     <form class="photo-form">
       <section class="btn-container">
         <label for="title-input">Title</label>
-        <input id ="title-input"type="text"> 
+        <input 
+          id ="title-input"
+          type="text"
+        /> 
+      <section class="photo-uploader hidden">
+      </section>
       </section>
       <section class="btn-container">
        <label for="caption-input">Caption</label>
-       <input id="caption-input" type="text">
+       <input 
+         id="caption-input" 
+         type="text"
+       />
       </section>
-      <button class="foto-btn choose-file-btn">Choose File</button>
-      <section class="bottom-btns">
+        <div class="file-btn">
+          <input 
+            class="foto-btn file-input" 
+            accept="image/png, image/jpeg, image/svg" 
+            type="file"
+          />
+          <img src="">
+          <button class="foto-btn choose-file-btn">Choose File</button>
+        </div>
+        <section class="bottom-btns">
         <button class="view-favorites-btn foto-btn">View Favorites</button>
         <button class="add-to-album-btn foto-btn">Add to Album</button>
       </section>
@@ -34,9 +60,9 @@
     </form>
   </header>
   <main>
-      <section class="empty hidden">
-       <h1 class="add-content">Try Adding Some Photos!</h1> 
-    </div>
+    <section class="empty hidden">
+      <h1 class="add-content">Try Adding Some Photos!</h1> 
+    </section>
   </main>
 </body>
 <script ty[e="text/javascript" src="photo.js"></script>
