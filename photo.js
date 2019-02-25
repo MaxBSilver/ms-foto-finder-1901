@@ -11,11 +11,11 @@ class Photo {
   }
 
   saveToStorage() {
-    var stringifiedPhotos = JSON.stringify(images);
-    localStorage.setItem('images', stringifiedPhotos);
+    var stringifiedPhotos = JSON.stringify(fotos);
+    localStorage.setItem('fotos', stringifiedPhotos);
   }
 
   updateStorage(i, newPhoto) {
-    localStorage.setItem('images', JSON.stringify(images));
+    localStorage.setItem('fotos', JSON.stringify(fotos));
   }
 }

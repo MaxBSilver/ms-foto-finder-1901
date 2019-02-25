@@ -1,6 +1,4 @@
 /* Global Variables */
-//handle to 'click/delete'
-//api calls 'fetch'
 
 var addToAlbumEl = document.querySelector('.add-to-album-btn');
 var captionInputEl = document.querySelector('#caption-input');
@@ -8,7 +6,6 @@ var chooseFileBtnEl = document.querySelector('.choose-file-btn');
 var emptyEl = document.querySelector('.empty')
 var favBtnEl = document.querySelector('.favorite-btn');
 var fileInputEl = document.querySelector('.file-input');
-var images;
 var mainEl = document.querySelector('main');
 var photoImgEl = document.querySelector('photo-img');
 var reader = new FileReader();
@@ -17,68 +14,70 @@ var searchInputEl = document.querySelector('#search');
 var showMoreBtnEl = document.querySelector('.show-more-btn');
 var titleInputEl = document.querySelector('#title-input');
 var viewFavoritesBtnEl = document.querySelector('.view-favorites-btn');
-var bodyEl = document.querySelector('body');
+var fotos;
 
-/* Event Listeners */
+/* --- Event Listeners --- */
 
-//rename verb to front
+// Load // 
+window.addEventListener('load', loadStorage);
+
+// Header //
 addToAlbumEl.addEventListener('click', addFoto);
 fileInputEl.addEventListener('change', chooseFotoFile);
-mainEl.addEventListener('click', buttonListener);
+showMoreBtnEl.addEventListener('click', handleShowMore);
+viewFavoritesBtnEl.addEventListener('click', toggleView);
+
+// Search //
 searchBtnEl.addEventListener('click', searchFotos);
 searchInputEl.addEventListener('keyup', searchChecker);
-showMoreBtnEl.addEventListener('click', handleShowMore);
-viewFavoritesBtnEl.addEventListener('click', toggleViewFavorites);
-window.addEventListener('load', loadStorage);
+
+// Foto //
+mainEl.addEventListener('click', buttonListener);
 window.addEventListener('keypress', function (e) {
-    if (e.keyCode === 13) {
-        editCard(e);
-        e.target.setAttribute("contentEditable", false);
-    }
-  }) 
+  if (e.keyCode === 13) {
+    editFoto(e);
+    e.target.setAttribute("contentEditable", false);
+  }
+});
 
 /* --- Functions --- */
-
-function chooseFotoFile(){
- var file = document.querySelector('.file-input').files[0];
- if (file){
-    reader.readAsDataURL(file);
-    reader.onloadend = create;
-  }
-}
-
-function addPhoto(e) {
- return e.target.result;
-}
 
 /* Create Card */
 
 function create(e) {
-   var cardId = Date.now();
-   var titleInputVal = titleInputEl.value;
-   var captionInputVal = captionInputEl.value;
-   var fileVal = addPhoto(e);
-   var newPhoto = new Photo(cardId, titleInputVal, captionInputVal, fileVal);
+  var cardId = Date.now();
+  var titleInputVal = titleInputEl.value;
+  var captionInputVal = captionInputEl.value;
+  var fileVal = addPhoto(e);
+  var newPhoto = new Photo(cardId, titleInputVal, captionInputVal, fileVal);
     if(newPhoto.title || newPhoto.caption || newPhoto.file != ''){
-    images.push(newPhoto);
+    fotos.push(newPhoto);
      newPhoto.saveToStorage();
   }
 }
 
-function displayCreate(images){
-   i = images.length - 1;
-    if(captionInputEl.value != '' && titleInputEl.value != '' && fileInputEl.value != ''){
-    generateCard(images[i].id, images[i].title, images[i].caption, images[i].file);
-    clearInputs();
-  }
-  else{
-    alert('Missing a title, caption, or file!')
+function addPhoto(e) {
+  return e.target.result;
+}
+
+function chooseFotoFile(){
+ var imgFile = document.querySelector('.file-input').files[0];
+ if (imgFile){
+    reader.readAsDataURL(imgFile);
+    reader.onloadend = create;
   }
 }
 
+function clearInputs() {
+  titleInputEl.value = '';
+  captionInputEl.value = '';
+  fileInputEl.value = '';
+}
+
+/* -- Display Fotos on DOM -- */
+
 function generateCard(id, title, caption, file) {
-  event.preventDefault();
-  var card = `<article class="photo" data-id=${id}>
+  var foto = `<article class="photo" data-id=${id}>
       <section class="photo-title">
         <h2 contentEditable="true">${title}</h2>
       </section>
@@ -93,65 +92,32 @@ function generateCard(id, title, caption, file) {
         <button id="favorite-btn" class="favorite-btn"></button>
       </section>
     </article>`
-    mainEl.insertAdjacentHTML('afterbegin', card);
+    mainEl.insertAdjacentHTML('afterbegin', foto);
 }
 
-function clearInputs() {
-  titleInputEl.value = '';
-  captionInputEl.value = '';
-}
-
-/* -- load cards -- */
-
-//Refactor to 1 function logic for local storage or new array. if images has value update otherwise default to local storage
-
-function loadFromNew(images) {
-  images;
-  i = 0;
-  if(images.length != 0 && images.length > 10){
-    const arrLength = parseInt(images.length);
-    const arrLengthMax = parseInt(images.length - 10);
-    images = images.slice(arrLengthMax, arrLength);
-    displayFotos(images);
+function createDisplay(fotos){
+  i = fotos.length - 1;
+  if(captionInputEl.value != '' && titleInputEl.value != '' && fileInputEl.value != ''){
+    generateCard(fotos[i].id, fotos[i].title, fotos[i].caption, fotos[i].file);
+    clearInputs();
   }
-    else if(images.length !=0 && images.length <  10){
-      displayFotos(images);
-    }
-  }
-  function displayFotos(images){
-  images.forEach(function(){
-    displayCards(images);
-    })
-}
-
-// look through and change let/const/var
-
-function loadStorage() {
-  images = JSON.parse(localStorage.getItem('images')) || [];
-  emptyMessage(images);
-  i = 0;
-  if(images.length != 0 && images.length > 10){
-    const arrLength = parseInt(images.length);
-    const arrLengthMax = parseInt(images.length - 10);
-    images = images.slice(arrLengthMax, arrLength);
-    displayFotos(images);
-  }
-  else if(images.length !=0 && images.length <  10){
-    displayFotos(images);
+  else{
+    clearInputs();
+    alert('Missing a title, caption, or file!')
   }
 }
 
-function displayCards(images) {
-  generateCard(images[i].id, images[i].title, images[i].caption, images[i].file);
-  if(images[i].favorited){ 
+function displayFotos(fotos) {
+  generateCard(fotos[i].id, fotos[i].title, fotos[i].caption, fotos[i].file);
+  if(fotos[i].favorited){ 
     let favorite = document.querySelector('.favorite-btn');
     favorite.classList.add('favorite-btn-active');
   }
   i++;
 }
 
-function emptyMessage(images){
-  if(images.length == 0) {
+function emptyMessage(fotos){
+  if(fotos.length == 0) {
     emptyEl.classList.remove('hidden');
   }
   else {
@@ -159,8 +125,121 @@ function emptyMessage(images){
   }
 }
 
+/* -- Load Fotos -- */
 
-/* -- button functions -- */
+//Refactor to 1 function logic for local storage or new array. if fotos has value update otherwise default to local storage
+function loadFromNew(fotos) {
+  fotos;
+  i = 0;
+  if(fotos.length != 0 && fotos.length > 10){
+    const arrLength = parseInt(fotos.length);
+    const arrLengthMax = parseInt(fotos.length - 10);
+    fotos = fotos.slice(arrLengthMax, arrLength);
+    iterateFotos(fotos);
+  }
+  else if(fotos.length !=0 && fotos.length <  10){
+    iterateFotos(fotos);
+  }
+}
+
+function loadStorage() {
+  fotos = JSON.parse(localStorage.getItem('fotos')) || [];
+  emptyMessage(fotos);
+  i = 0;
+  if(fotos.length != 0 && fotos.length > 10){
+    const arrLength = parseInt(fotos.length);
+    const arrLengthMax = parseInt(fotos.length - 10);
+    fotos = fotos.slice(arrLengthMax, arrLength);
+    iterateFotos(fotos);
+  }
+  else if(fotos.length !=0 && fotos.length <  10){
+    iterateFotos(fotos);
+  }
+}
+
+function iterateFotos(fotos){
+  fotos.forEach(function(){
+    displayFotos(fotos);
+  })
+}
+
+/* -- Header Functions -- */
+
+function addFoto(e) {
+  e.preventDefault();
+  createDisplay(fotos);
+  emptyMessage(fotos);
+}
+
+function handleShowMore() {
+  event.preventDefault();
+  mainEl.innerHTML = '';
+  i = 0;
+  if(showMoreBtnEl.innerText === 'Show More'){
+    showMoreBtnEl.innerText = 'Show Less';
+    fotos = JSON.parse(localStorage.getItem('fotos')) || [];
+    iterateFotos(fotos);
+  }
+  else{
+    showMoreBtnEl.innerText = 'Show More';
+    loadStorage(fotos);
+  }
+}
+
+function searchChecker() {
+  var favoritedFotos = [];
+  if (viewFavoritesBtnEl.innerText === 'View Favorites') {
+    searchFotos(fotos)
+  }
+  else {
+    fotos.forEach(fotos => {
+      if(fotos.favorited){ 
+      favoritedFotos.push(fotos);
+      }
+    })
+    searchFotos(favoritedFotos);
+  }
+}
+
+function searchFotos(fotos) {
+  var searchInputVal = searchInputEl.value;
+  var searchQuery = searchInputVal.toLowerCase();
+  var searchResults = [];
+  fotos.forEach(fotos => {
+    if(fotos.title.toLowerCase().includes(searchQuery) || fotos.caption.toLowerCase().includes(searchQuery)){
+      searchResults.push(fotos)
+    }
+    mainEl.innerHTML ='';
+    loadFromNew(searchResults);
+  })
+}
+
+function toggleView(event) {
+  event.preventDefault();
+  if (viewFavoritesBtnEl.innerText === 'View Favorites'){
+    viewFavorites();
+    viewFavoritesBtnEl.innerText = 'View All Photos';
+  }
+  else {
+    mainEl.innerHTML = '';
+    loadFromNew(fotos);
+    viewFavoritesBtnEl.innerText = 'View Favorites';
+  }
+}
+
+function viewFavorites() {
+  fotos = JSON.parse(localStorage.getItem('fotos')) || [];
+  var favoriteList = [];
+  fotos.forEach(fotos => {
+    if(fotos.favorited)
+      favoriteList.push(fotos);
+    })
+  mainEl.innerHTML ='';
+  loadFromNew(favoriteList);
+}
+
+/* -- Foto Functions --*/
+
 function buttonListener(e) {
   var favoriteBtnEl = document.querySelector('#favorite-btn');
   var trashBtnEl = document.querySelector('#trash-btn');
@@ -175,136 +254,62 @@ function buttonListener(e) {
   }
 }
 
-function addFoto (e) {
-  e.preventDefault();
-  displayCreate(images);
-  emptyMessage(images);
-}
-
-function handleShowMore() {
-  mainEl.innerHTML = '';
-  i = 0;
-  if(showMoreBtnEl.innerText === 'Show More'){
-    showMoreBtnEl.innerText = 'Show Less';
-    images = JSON.parse(localStorage.getItem('images')) || [];
-    displayFotos(images);
-  }
-  else{
-    showMoreBtnEl.innerText = 'Show More';
-    loadStorage(images);
-  }
-}
-
-function searchChecker() {
-  var favoritedImages = [];
-  if (viewFavoritesBtnEl.innerText === 'View Favorites') {
-    searchFotos(images)
-  }
-  else {
-    images.forEach(image => {
-      if(image.favorited){ 
-      favoritedImages.push(image);
-    }
-    })
-      searchFotos(favoritedImages);
-  }
-}
-
-function searchFotos(images) {
-  var searchInputVal = searchInputEl.value;
-  var searchQuery = searchInputVal.toLowerCase();
-  var searchResults = [];
-  images.forEach(image => {
-    if(image.title.toLowerCase().includes(searchQuery) || image.caption.toLowerCase().includes(searchQuery)){
-      searchResults.push(image)
-    }
-      mainEl.innerHTML ='';
-      loadFromNew(searchResults);
-  })
-}
-
-/* -- Card Functions --*/
-
 function deleteCards(e) { 
-  var i = images.indexOf(targetImage[0]);
-  var newPhoto = new Photo(images[i].id, images[i].title, images[i].caption, images[i].file, images[i].favorited);
-  images.splice(i, 1);
-  updateAndSaveToStorage(i, newPhoto);
+  var i = fotos.indexOf(targetImage[0]);
+  var newPhoto = new Photo(fotos[i].id, fotos[i].title, fotos[i].caption, fotos[i].file, fotos[i].favorited);
+  fotos.splice(i, 1);
+  updateThenSave(i, newPhoto);
   mainEl.innerHTML = '';
-  loadFromNew(images);
+  loadFromNew(fotos);
 }
 
 function favoriteCards(e) {
-  var i = images.indexOf(targetImage[0]);
-  var newPhoto = new Photo(images[i].id, images[i].title, images[i].caption, images[i].file, images[i].favorited);
-  if(!images[i].favorited){
+  var i = fotos.indexOf(targetImage[0]);
+  var newPhoto = new Photo(fotos[i].id, fotos[i].title, fotos[i].caption, fotos[i].file, fotos[i].favorited);
+  if(!fotos[i].favorited){
     newPhoto.favorited = true;
     e.target.classList.add('favorite-btn-active');
   } 
   else {
     e.target.classList.remove('favorite-btn-active')
   }
-  images.splice(i, 1, newPhoto);
-  updateAndSaveToStorage(i, newPhoto);
-}
-
-function toggleViewFavorites(event) {
-  event.preventDefault();
-  if (viewFavoritesBtnEl.innerText === 'View Favorites'){
-    viewFavorites();
-    viewFavoritesBtnEl.innerText = 'View All Photos';
-  }
-  else {
-    mainEl.innerHTML = '';
-    loadFromNew(images);
-    viewFavoritesBtnEl.innerText = 'View Favorites';
-  }
-}
-
-function viewFavorites(event) {
-  images = JSON.parse(localStorage.getItem('images')) || [];
-  var favoriteList = [];
-  images.forEach(image => {
-    if(image.favorited)
-      favoriteList.push(image);
-  })
-  mainEl.innerHTML ='';
-  loadFromNew(favoriteList);
+  fotos.splice(i, 1, newPhoto);
+  updateThenSave(i, newPhoto);
 }
 
 
 /* -- Editing Card Functions -- */ 
 
 //on blur event
-function editCard(e) {
+function editFoto(e) {
   photoTargeter(e);
   var newPhoto = new Photo(targetImage[0].id, targetImage[0].title, targetImage[0].caption, targetImage[0].file, targetImage[0].favorited);
-  i = images.indexOf(targetImage[0]);
+  i = fotos.indexOf(targetImage[0]);
   if(e.target.tagName === 'H2'){
-  e.target.setAttribute("contentEditable", true);
-  newPhoto.title = e.target.innerHTML;
- }
+    e.target.setAttribute("contentEditable", true);
+    newPhoto.title = e.target.innerHTML;
+  }
   else if(e.target.tagName === 'P'){
-  e.target.setAttribute("contentEditable", true);
-  newPhoto.caption = e.target.innerHTML;
+    e.target.setAttribute("contentEditable", true);
+    newPhoto.caption = e.target.innerHTML;
   }
   else if(e.target.tagName ==='IMG'){
   }
-  images.splice(i, 1, newPhoto);
-  updateAndSaveToStorage(i, newPhoto);
+  fotos.splice(i, 1, newPhoto);
+  updateThenSave(i, newPhoto);
 }
 
-function updateAndSaveToStorage(i, newPhoto){
- newPhoto.updateStorage(i, newPhoto);
- newPhoto.saveToStorage;
+function updateThenSave(i, newPhoto){
+  newPhoto.updateStorage(i, newPhoto);
+  newPhoto.saveToStorage;
 }
 
 /* -- Targeting Functions -- */
 
 function photoTargeter(e) {
-  images = JSON.parse(localStorage.getItem('images'))
+  fotos = JSON.parse(localStorage.getItem('fotos'))
   var articleTarget = e.target.closest('article') || e.target;
-  targetImage = images.filter(function(item) {
+  targetImage = fotos.filter(function(item) {
     return item.id === parseInt(articleTarget.getAttribute('data-id'));
   })
 }
