@@ -22,6 +22,12 @@ button:focus {
   outline: none;
 }
 
+[contenteditable="true"]:active, 
+[contenteditable="true"]:focus
+{
+   border:none;
+   outline:none;
+}
 header button:hover {
   background-color:#938284;
 }
@@ -230,24 +236,25 @@ h2 {
 }
 
 p {
-  margin: 0;
+  margin: 10px;
   padding: 0;
+  height: 100px;
 }
 
 .photo-caption {
   font-size: 12px;
   margin: 0 5px;
   color: #3E2A35;
-  height: 40%;
+  height: 30%;
 }
 
 .photo-img-wrapper {
-  height: 35%;
+  height: 45%;
 }
 
 .photo-img {
-  height:35%;
-  min-height: 120px;
+  max-height: 170px;
+  min-height: 170px;
   width:100%;
   background-position: contain;
 }
