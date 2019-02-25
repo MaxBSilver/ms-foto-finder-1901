@@ -4,6 +4,7 @@
 *:after,
 * {
   box-sizing: border-box;
+  /*border: red 1px solid;*/
 }
 
 body {
@@ -204,13 +205,20 @@ button {
 /* -- Main --*/
 
 main {
+  min-height: 55vh;
   background-color: #C2B2B4;
+  display:flex;
+  align-content:center;
+}
+
+.photo-wrapper {
   border: 1px #C2B2B4 solid;
+  flex-direction: row;
   display: flex;
-  margin: auto;
+  margin: 0 30px;
   flex-wrap: wrap;
   height: 100%;
-  min-height: 55vh;
+  min-height:55vh;
 }
 
 
@@ -293,12 +301,6 @@ p {
 
 /* Media Queries */
 
-@media only screen and (max-width: 750px) {
-  .photo {
-    margin: 30px auto;
-
-  }
-}
 
 @media only screen and (max-width: 600px) {
   nav {

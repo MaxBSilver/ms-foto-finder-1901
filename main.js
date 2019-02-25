@@ -19,19 +19,23 @@ var fotos;
 /* --- Event Listeners --- */
 
 // Load // 
+
 window.addEventListener('load', loadStorage);
 
 // Header //
+
 addToAlbumEl.addEventListener('click', addFoto);
 fileInputEl.addEventListener('change', chooseFotoFile);
 showMoreBtnEl.addEventListener('click', handleShowMore);
 viewFavoritesBtnEl.addEventListener('click', toggleView);
 
 // Search //
+
 searchBtnEl.addEventListener('click', searchFotos);
 searchInputEl.addEventListener('keyup', searchChecker);
 
 // Foto //
+
 mainEl.addEventListener('click', buttonListener);
 window.addEventListener('keypress', function (e) {
   if (e.keyCode === 13) {
@@ -74,7 +78,7 @@ function clearInputs() {
   fileInputEl.value = '';
 }
 
-/* -- Display Fotos on DOM -- */
+/* --- Display Fotos on DOM --- */
 
 function generateCard(id, title, caption, file) {
   var foto = `<article class="photo" data-id=${id}>
@@ -125,7 +129,7 @@ function emptyMessage(fotos){
   }
 }
 
-/* -- Load Fotos -- */
+/* --- Load Fotos -- */
 
 //Refactor to 1 function logic for local storage or new array. if fotos has value update otherwise default to local storage
 function loadFromNew(fotos) {
