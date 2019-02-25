@@ -1,5 +1,7 @@
 /* Global Variables */
 
+// vh to percentages
+
 var addToAlbumEl = document.querySelector('.add-to-album-btn');
 var captionInputEl = document.querySelector('#caption-input');
 var chooseFileBtnEl = document.querySelector('.choose-file-btn');
@@ -26,7 +28,7 @@ window.addEventListener('load', loadStorage);
 
 addToAlbumEl.addEventListener('click', addFoto);
 fileInputEl.addEventListener('change', chooseFotoFile);
-showMoreBtnEl.addEventListener('click', handleShowMore);
+showMoreBtnEl.addEventListener('click', toggleShowMore);
 viewFavoritesBtnEl.addEventListener('click', toggleView);
 
 // Search //
@@ -73,9 +75,9 @@ function chooseFotoFile(){
 }
 
 function clearInputs() {
-  titleInputEl.value = '';
-  captionInputEl.value = '';
-  fileInputEl.value = '';
+  // titleInputEl.value = '';
+  // captionInputEl.value = '';
+  // fileInputEl.value = '';
 }
 
 /* --- Display Fotos on DOM --- */
@@ -141,7 +143,7 @@ function loadFromNew(fotos) {
     fotos = fotos.slice(arrLengthMax, arrLength);
     iterateFotos(fotos);
   }
-  else if(fotos.length !=0 && fotos.length <  10){
+  else if(fotos.length !=0 && fotos.length <= 10){
     iterateFotos(fotos);
   }
 }
@@ -156,7 +158,7 @@ function loadStorage() {
     fotos = fotos.slice(arrLengthMax, arrLength);
     iterateFotos(fotos);
   }
-  else if(fotos.length !=0 && fotos.length <  10){
+  else if(fotos.length !=0 && fotos.length <=  10){
     iterateFotos(fotos);
   }
 }
@@ -175,19 +177,37 @@ function addFoto(e) {
   emptyMessage(fotos);
 }
 
-function handleShowMore() {
-  event.preventDefault();
+
+function toggleShowMore(e) {
+  e.preventDefault()
+  if(JSON.parse(localStorage.getItem('fotos')).length <= 10) {
+    showMoreBtnEl.setAttribute('disabled', true)
+  }
+  else {
+    handleShowMore(fotos);
+  }
+}
+function handleShowMore(fotos) {
   mainEl.innerHTML = '';
   i = 0;
   if(showMoreBtnEl.innerText === 'Show More'){
-    showMoreBtnEl.innerText = 'Show Less';
     fotos = JSON.parse(localStorage.getItem('fotos')) || [];
+    showMoreBtnEl.innerText = 'Show Less';
     iterateFotos(fotos);
   }
-  else{
+  else {
     showMoreBtnEl.innerText = 'Show More';
-    loadStorage(fotos);
+    iterateFotos(fotos);
   }
+}
+
+
+function handleShowLess() {
+  console.log(fotos);
+  mainEl.innerHTML = '';
+  i = 0;
+  showMoreBtnEl.innerText = 'Show Less';
+  iterate(fotos);
 }
 
 function searchChecker() {
@@ -247,7 +267,7 @@ function viewFavorites() {
 function buttonListener(e) {
   var favoriteBtnEl = document.querySelector('#favorite-btn');
   var trashBtnEl = document.querySelector('#trash-btn');
-  var targetImage;
+  var targetFoto;
   if(e.target.id == favoriteBtnEl.id) {
     photoTargeter(e);
     favoriteCards(e);
@@ -258,17 +278,38 @@ function buttonListener(e) {
   }
 }
 
+// move delete cards to photo.js
+function deleteDuringFavorite(fotos){
+  if(viewFavoritesBtnEl.innerText === 'View All Photos'){
+    viewFavorites(fotos)
+  }
+  else { 
+    loadFromNew(fotos);
+  }
+}
+
+function deleteDuringShowMore(){
+  if(JSON.parse(localStorage.getItem('fotos')).length >= 10){
+    showMoreBtnEl.innerHTML = 'Show More';
+  }
+  else {
+    showMoreBtnEl.innerHTML = 'Show Less';
+  }
+}
 function deleteCards(e) { 
-  var i = fotos.indexOf(targetImage[0]);
+  event.preventDefault()
+  var i = fotos.indexOf(targetFoto[0]);
   var newPhoto = new Photo(fotos[i].id, fotos[i].title, fotos[i].caption, fotos[i].file, fotos[i].favorited);
   fotos.splice(i, 1);
   updateThenSave(i, newPhoto);
   mainEl.innerHTML = '';
-  loadFromNew(fotos);
+  deleteDuringFavorite(fotos);
+  deleteDuringShowMore();
+
 }
 
 function favoriteCards(e) {
-  var i = fotos.indexOf(targetImage[0]);
+  var i = fotos.indexOf(targetFoto[0]);
   var newPhoto = new Photo(fotos[i].id, fotos[i].title, fotos[i].caption, fotos[i].file, fotos[i].favorited);
   if(!fotos[i].favorited){
     newPhoto.favorited = true;
@@ -285,10 +326,11 @@ function favoriteCards(e) {
 /* -- Editing Card Functions -- */ 
 
 //on blur event
+//move to photo
 function editFoto(e) {
   photoTargeter(e);
-  var newPhoto = new Photo(targetImage[0].id, targetImage[0].title, targetImage[0].caption, targetImage[0].file, targetImage[0].favorited);
-  i = fotos.indexOf(targetImage[0]);
+  var newPhoto = new Photo(targetFoto[0].id, targetFoto[0].title, targetFoto[0].caption, targetFoto[0].file, targetFoto[0].favorited);
+  i = fotos.indexOf(targetFoto[0]);
   if(e.target.tagName === 'H2'){
     e.target.setAttribute("contentEditable", true);
     newPhoto.title = e.target.innerHTML;
@@ -296,8 +338,6 @@ function editFoto(e) {
   else if(e.target.tagName === 'P'){
     e.target.setAttribute("contentEditable", true);
     newPhoto.caption = e.target.innerHTML;
-  }
-  else if(e.target.tagName ==='IMG'){
   }
   fotos.splice(i, 1, newPhoto);
   updateThenSave(i, newPhoto);
@@ -313,7 +353,7 @@ function updateThenSave(i, newPhoto){
 function photoTargeter(e) {
   fotos = JSON.parse(localStorage.getItem('fotos'))
   var articleTarget = e.target.closest('article') || e.target;
-  targetImage = fotos.filter(function(item) {
+  targetFoto = fotos.filter(function(item) {
     return item.id === parseInt(articleTarget.getAttribute('data-id'));
   })
 }

@@ -51,7 +51,12 @@ h1 {
   margin: 0;
   padding: 0;
 }
+h4 {
+  font-size: 40px;
+  font-weight: 300;
+  color: #3E2A35 ;
 
+}
 .logo-img {
   margin: 0 5px;
   margin-bottom: 5px;
@@ -97,9 +102,10 @@ h1 {
 
 header {
   display: flex;
-  height: 45vh;
   justify-content: center;
   margin-bottom: 20px;
+  height: 332px;
+
 }
 
 form {
@@ -156,6 +162,19 @@ button {
 
 .trash-btn:hover {
   background-image: url("./fotofinder-assets/delete-active.svg");
+  animation: rotateBtn 1s linear infinite;
+}
+
+@keyframes rotateBtn {
+  0%{
+    transform: rotateX(0deg);
+  }
+  50%{
+    transform: rotateX(35deg);
+
+  }
+  100%{transform: rotateX(0deg);
+  }
 }
 
 .favorite-btn {
@@ -165,11 +184,21 @@ button {
   height: 40px;
   margin: 0 20px;
   width: 40px;
+
 }
 
 .favorite-btn-active,
 .favorite-btn:hover {
   background-image: url("./fotofinder-assets/favorite-active.svg");
+}
+.favorite-btn:hover {
+  animation: shake 0.5s linear infinite;
+}
+
+@keyframes shake {
+  50%{
+    transform: translateX(1px);
+  }
 }
 
 .btn-container {
@@ -205,32 +234,37 @@ button {
 /* -- Main --*/
 
 main {
-  min-height: 55vh;
-  background-color: #C2B2B4;
-  display:flex;
-  align-content:center;
-}
-
-.photo-wrapper {
   border: 1px #C2B2B4 solid;
-  flex-direction: row;
-  display: flex;
-  margin: 0 30px;
-  flex-wrap: wrap;
+  background-color: #C2B2B4;
+  display: grid;
+  grid-template-columns: 22% 22% 22% 22%;
   height: 100%;
-  min-height:55vh;
+  min-height: 55vh;
+  padding: 0 50px;
+  align-items:center;
+  justify-content: center;
+  grid-gap: 30px;
 }
-
 
 .photo {
   background-color: white;
   border: #938284 1px solid;
   display:flex;
   flex-direction: column;
-  margin: 25px 25px;
-  max-height: 400px;
-  min-width: 200px;
-  width: 20%;
+  margin: 20px auto;
+  height: 400px;
+  width:250px;
+  min-width: 250px;
+  /*animation: fadein 2s;*/
+}
+
+@keyframes fadein {
+  from{
+    opacity: 0;
+  }
+  to{
+    opacity: 1;
+  }
 }
 
 h2 {
@@ -276,6 +310,8 @@ p {
 
 }
 
+
+
 .icon-styling {
   width: 50px;
 }
@@ -283,11 +319,13 @@ p {
 
 /* Add Images Box */
 .empty {
-  align-items:center;
-  display:flex;
+  width: 100vw;
+  align-items: center;
+  display: flex;
+  justify-content: center;
   height: 100px;
   margin: 100px auto;
-  outline: 5px #3B2B34 dashed;
+  position: absolute;
 }
 
 .add-content {
@@ -298,11 +336,30 @@ p {
   display:none;
 }
 
-
 /* Media Queries */
 
+@media only screen and (max-width: 1150px) {
+  main {
+    grid-template-columns: 33% 33% 33%;
+  }
+}
+
+@media only screen and (max-width: 850px) {
+  main {
+    grid-template-columns: 40% 40%;
+  }
+}
+
+@media only screen and (max-width: 700px) {
+  main {
+    grid-template-columns: 100%;
+  }
+}
 
 @media only screen and (max-width: 600px) {
+  main {
+    grid-template-columns: 100%;
+  } 
   nav {
     flex-direction: column;   
     height: 80px;
@@ -311,6 +368,7 @@ p {
 .search-wrapper{
     width: 100%;
   }
+}
 
 /* Animations */
 
