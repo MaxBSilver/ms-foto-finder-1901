@@ -22,14 +22,14 @@ var bodyEl = document.querySelector('body');
 /* Event Listeners */
 
 //rename verb to front
-addToAlbumEl.addEventListener('click', addToAlbum);
-fileInputEl.addEventListener('change', chooseFile);
+addToAlbumEl.addEventListener('click', addFoto);
+fileInputEl.addEventListener('change', chooseFotoFile);
 mainEl.addEventListener('click', buttonListener);
-searchBtnEl.addEventListener('click', searchCards);
+searchBtnEl.addEventListener('click', searchFotos);
 searchInputEl.addEventListener('keyup', searchChecker);
-showMoreBtnEl.addEventListener('click', showMore);
-viewFavoritesBtnEl.addEventListener('click', viewFavoriteToggle);
-window.addEventListener('load', loadFromStorage);
+showMoreBtnEl.addEventListener('click', handleShowMore);
+viewFavoritesBtnEl.addEventListener('click', toggleViewFavorites);
+window.addEventListener('load', loadStorage);
 window.addEventListener('keypress', function (e) {
     if (e.keyCode === 13) {
         editCard(e);
@@ -37,8 +37,9 @@ window.addEventListener('keypress', function (e) {
     }
   }) 
 
-/* Functions */
-function chooseFile(){
+/* --- Functions --- */
+
+function chooseFotoFile(){
  var file = document.querySelector('.file-input').files[0];
  if (file){
     reader.readAsDataURL(file);
@@ -58,19 +59,20 @@ function create(e) {
    var captionInputVal = captionInputEl.value;
    var fileVal = addPhoto(e);
    var newPhoto = new Photo(cardId, titleInputVal, captionInputVal, fileVal);
-    if(newPhoto.title && newPhoto.caption &&  newPhoto.file != ''){
+    if(newPhoto.title || newPhoto.caption || newPhoto.file != ''){
     images.push(newPhoto);
+     newPhoto.saveToStorage();
   }
-    else{
-      alert('stop')
-    }
-    newPhoto.saveToStorage();
 }
 
 function displayCreate(images){
-   if(captionInputEl.value && titleInputEl.value != ''){
-    i = images.length - 1;
+   i = images.length - 1;
+    if(captionInputEl.value != '' && titleInputEl.value != '' && fileInputEl.value != ''){
     generateCard(images[i].id, images[i].title, images[i].caption, images[i].file);
+    clearInputs();
+  }
+  else{
+    alert('Missing a title, caption, or file!')
   }
 }
 
@@ -107,23 +109,24 @@ function loadFromNew(images) {
   images;
   i = 0;
   if(images.length != 0 && images.length > 10){
-    let arrLength = parseInt(images.length);
-    let arrLengthMax = parseInt(images.length - 10);
+    const arrLength = parseInt(images.length);
+    const arrLengthMax = parseInt(images.length - 10);
     images = images.slice(arrLengthMax, arrLength);
-    images.forEach(function(){
-    displayCards(images);
-    })
+    displayFotos(images);
   }
     else if(images.length !=0 && images.length <  10){
-      images.forEach(function(){
-      displayCards(images);
-      })
+      displayFotos(images);
     }
   }
+  function displayFotos(images){
+  images.forEach(function(){
+    displayCards(images);
+    })
+}
 
 // look through and change let/const/var
 
-function loadFromStorage() {
+function loadStorage() {
   images = JSON.parse(localStorage.getItem('images')) || [];
   emptyMessage(images);
   i = 0;
@@ -131,22 +134,18 @@ function loadFromStorage() {
     const arrLength = parseInt(images.length);
     const arrLengthMax = parseInt(images.length - 10);
     images = images.slice(arrLengthMax, arrLength);
-    images.forEach(function(){
-    displayCards(images);
-    })
+    displayFotos(images);
   }
-    else if(images.length !=0 && images.length <  10){
-      images.forEach(function(){
-      displayCards(images);
-      })
-    }
+  else if(images.length !=0 && images.length <  10){
+    displayFotos(images);
+  }
 }
 
 function displayCards(images) {
   generateCard(images[i].id, images[i].title, images[i].caption, images[i].file);
   if(images[i].favorited){ 
-  var fav = document.querySelector('.favorite-btn');
-  fav.classList.add('favorite-btn-active');
+    let favorite = document.querySelector('.favorite-btn');
+    favorite.classList.add('favorite-btn-active');
   }
   i++;
 }
@@ -162,7 +161,6 @@ function emptyMessage(images){
 
 
 /* -- button functions -- */
-//document get by id  167/168
 function buttonListener(e) {
   var favoriteBtnEl = document.querySelector('#favorite-btn');
   var trashBtnEl = document.querySelector('#trash-btn');
@@ -177,32 +175,30 @@ function buttonListener(e) {
   }
 }
 
-function addToAlbum (event) {
-  event.preventDefault();
+function addFoto (e) {
+  e.preventDefault();
   displayCreate(images);
   emptyMessage(images);
 }
 
-function showMore() {
+function handleShowMore() {
   mainEl.innerHTML = '';
   i = 0;
   if(showMoreBtnEl.innerText === 'Show More'){
-  showMoreBtnEl.innerText = 'Show Less';
-  images = JSON.parse(localStorage.getItem('images')) || [];
-  images.forEach(function(){
-      displayCards(images);
-  })
+    showMoreBtnEl.innerText = 'Show Less';
+    images = JSON.parse(localStorage.getItem('images')) || [];
+    displayFotos(images);
   }
   else{
     showMoreBtnEl.innerText = 'Show More';
-    loadFromStorage(images);
+    loadStorage(images);
   }
 }
 
 function searchChecker() {
   var favoritedImages = [];
   if (viewFavoritesBtnEl.innerText === 'View Favorites') {
-    searchCards(images)
+    searchFotos(images)
   }
   else {
     images.forEach(image => {
@@ -210,11 +206,11 @@ function searchChecker() {
       favoritedImages.push(image);
     }
     })
-      searchCards(favoritedImages);
+      searchFotos(favoritedImages);
   }
 }
 
-function searchCards(images) {
+function searchFotos(images) {
   var searchInputVal = searchInputEl.value;
   var searchQuery = searchInputVal.toLowerCase();
   var searchResults = [];
@@ -229,8 +225,6 @@ function searchCards(images) {
 
 /* -- Card Functions --*/
 
-
-//updatestorage/savetostorage into separate function
 function deleteCards(e) { 
   var i = images.indexOf(targetImage[0]);
   var newPhoto = new Photo(images[i].id, images[i].title, images[i].caption, images[i].file, images[i].favorited);
@@ -254,7 +248,7 @@ function favoriteCards(e) {
   updateAndSaveToStorage(i, newPhoto);
 }
 
-function viewFavoriteToggle(event) {
+function toggleViewFavorites(event) {
   event.preventDefault();
   if (viewFavoritesBtnEl.innerText === 'View Favorites'){
     viewFavorites();
