@@ -184,9 +184,9 @@ button {
   height: 35px;
   margin: 0 20px;
   width: 35px;
-
 }
-
+/*
+*/
 .favorite-btn-active,
 .favorite-btn:hover {
   background-image: url("./fotofinder-assets/favorite-active.svg");
@@ -237,10 +237,10 @@ main {
   border: 1px #C2B2B4 solid;
   background-color: #C2B2B4;
   display: grid;
-  grid-template-columns: 22% 22% 22% 22%;
+  grid-template-columns: repeat(4, auto);
   height: 100%;
   min-height: 55vh;
-  padding: 0 50px;
+  padding: 30px 50px;
   align-items:center;
   justify-content: center;
   grid-gap: 30px;
@@ -251,11 +251,9 @@ main {
   border: #938284 1px solid;
   display:flex;
   flex-direction: column;
-  margin: 20px auto;
   height: 400px;
   width:250px;
   min-width: 250px;
-  /*animation: fadein 2s;*/
 }
 
 @keyframes fadein {
@@ -283,7 +281,7 @@ p {
   padding: 0;
   font-size: 16px;
   font-weight: 600;
-  line-height: 25px
+  line-height: 25px;
 }
 
 .photo-caption {
@@ -342,25 +340,20 @@ p {
 
 @media only screen and (max-width: 1150px) {
   main {
-    grid-template-columns: 33% 33% 33%;
+    grid-template-columns: repeat(3, auto);
   }
 }
 
 @media only screen and (max-width: 850px) {
   main {
-    grid-template-columns: 40% 40%;
+    grid-template-columns: repeat(2, auto);
   }
 }
 
-@media only screen and (max-width: 700px) {
-  main {
-    grid-template-columns: 100%;
-  }
-}
 
 @media only screen and (max-width: 600px) {
   main {
-    grid-template-columns: 100%;
+    grid-template-columns: auto;
   } 
   nav {
     flex-direction: column;   
