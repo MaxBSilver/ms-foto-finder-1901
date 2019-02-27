@@ -1,11 +1,7 @@
-/* Global Variables */
-
-// vh to percentages
-
 var addToAlbumEl = document.querySelector('.add-to-album-btn');
 var captionInputEl = document.querySelector('#caption-input');
 var chooseFileBtnEl = document.querySelector('.choose-file-btn');
-var emptyEl = document.querySelector('.empty')
+var emptyEl = document.querySelector('.empty');
 var favBtnEl = document.querySelector('.favorite-btn');
 var fileInputEl = document.querySelector('.file-input');
 var mainEl = document.querySelector('main');
@@ -17,40 +13,30 @@ var showMoreBtnEl = document.querySelector('.show-more-btn');
 var titleInputEl = document.querySelector('#title-input');
 var viewFavoritesBtnEl = document.querySelector('.view-favorites-btn');
 var fotos;
-/* --- Event Listeners --- */
+var headerEl = document.querySelector('header');
 
-// Load // 
 
 window.addEventListener('load', loadStorage);
-
-// Header //
-
-addToAlbumEl.addEventListener('click', addFoto);
-fileInputEl.addEventListener('change', chooseFotoFile);
-showMoreBtnEl.addEventListener('click', toggleShowMore);
-viewFavoritesBtnEl.addEventListener('click', toggleView);
-
-// Search //
-
-searchBtnEl.addEventListener('click', searchFotos);
-searchInputEl.addEventListener('keyup', searchChecker);
-
-// Foto //
-
-mainEl.addEventListener('click', buttonListener);
+window.addEventListener('load', toggleShowMore);
 mainEl.addEventListener('focusout', function(e) {
-  editFoto(e);
-});
-window.addEventListener('keypress', function (e) {
-  if (e.keyCode === 13) {
-    e.target.blur();
+  if(e != undefined){
     editFoto(e);
   }
 });
-
-/* --- Functions --- */
-
-/* Create Card */
+headerEl.addEventListener('change', toggleAddToAlbum);
+addToAlbumEl.addEventListener('click', addFoto);
+fileInputEl.addEventListener('change', chooseFotoFile);
+showMoreBtnEl.addEventListener('click', handleShowMore);
+viewFavoritesBtnEl.addEventListener('click', toggleView);
+searchBtnEl.addEventListener('click', searchFotos);
+searchInputEl.addEventListener('keyup', searchChecker);
+mainEl.addEventListener('click', buttonListener);
+window.addEventListener('keypress', function (e) {
+  if (e.keyCode === 13) {
+    editFoto(e);
+    e.target.blur();
+  }
+});
 
 function create(e) {
   var cardId = Date.now();
@@ -58,9 +44,21 @@ function create(e) {
   var captionInputVal = captionInputEl.value;
   var fileVal = addPhoto(e);
   var newPhoto = new Photo(cardId, titleInputVal, captionInputVal, fileVal);
-    if(newPhoto.title || newPhoto.caption || newPhoto.file != ''){
+  if(newPhoto.title || newPhoto.caption || newPhoto.file != ''){
     fotos.push(newPhoto);
-     newPhoto.saveToStorage();
+    newPhoto.saveToStorage();
+  }
+  toggleShowMore();
+}
+
+function createDisplay(fotos){
+  i = fotos.length - 1;
+  if(captionInputEl.value != '' && titleInputEl.value != '' && fileInputEl.value != ''){
+    generateCard(fotos[i].id, fotos[i].title, fotos[i].caption, fotos[i].file);
+    clearInputs();
+  } else{
+     clearInputs();
+     alert('Missing a title, caption, or file!')
   }
 }
 
@@ -82,8 +80,6 @@ function clearInputs() {
   fileInputEl.value = '';
 }
 
-/* --- Display Fotos on DOM --- */
-
 function generateCard(id, title, caption, file) {
   var foto = `<article class="photo" data-id=${id}>
       <section class="photo-title">
@@ -101,18 +97,6 @@ function generateCard(id, title, caption, file) {
       </section>
     </article>`
     mainEl.insertAdjacentHTML('afterbegin', foto);
-}
-
-function createDisplay(fotos){
-  i = fotos.length - 1;
-  if(captionInputEl.value != '' && titleInputEl.value != '' && fileInputEl.value != ''){
-    generateCard(fotos[i].id, fotos[i].title, fotos[i].caption, fotos[i].file);
-    clearInputs();
-  }
-  else{
-    clearInputs();
-    alert('Missing a title, caption, or file!')
-  }
 }
 
 function displayFotos(fotos) {
@@ -133,20 +117,15 @@ function emptyMessage(fotos){
   }
 }
 
-/* --- Load Fotos -- */
-
-//Refactor to 1 function logic for local storage or new array. if fotos has value update otherwise default to local storage
 function loadFromNew(fotos) {
-  fotos;
   i = 0;
-  if(fotos.length != 0 && fotos.length > 10){
+  if(fotos.length != 0 && fotos.length >= 10){
     const arrLength = parseInt(fotos.length);
     const arrLengthMax = parseInt(fotos.length - 10);
     fotos = fotos.slice(arrLengthMax, arrLength);
     iterateFotos(fotos);
-  }
-  else if(fotos.length !=0 && fotos.length <= 10){
-    iterateFotos(fotos);
+  } else if(fotos.length !=0 && fotos.length <=  10){
+      iterateFotos(fotos);
   }
 }
 
@@ -154,14 +133,13 @@ function loadStorage() {
   fotos = JSON.parse(localStorage.getItem('fotos')) || [];
   emptyMessage(fotos);
   i = 0;
-  if(fotos.length != 0 && fotos.length > 10){
+  if(fotos.length != 0 && fotos.length >= 10){
     const arrLength = parseInt(fotos.length);
     const arrLengthMax = parseInt(fotos.length - 10);
     fotos = fotos.slice(arrLengthMax, arrLength);
     iterateFotos(fotos);
-  }
-  else if(fotos.length !=0 && fotos.length <=  10){
-    iterateFotos(fotos);
+  } else if(fotos.length !=0 && fotos.length <=  10){
+      iterateFotos(fotos);
   }
 }
 
@@ -171,7 +149,27 @@ function iterateFotos(fotos){
   })
 }
 
-/* -- Header Functions -- */
+function toggleAddToAlbum(){
+  if(captionInputEl.value != '' && titleInputEl.value != '' && fileInputEl.value != ''){
+    addToAlbumEl.disabled = false;
+    addToAlbumEl.classList.remove('disabled-btn')
+  } else{
+      addToAlbumEl.disabled = true;
+      addToAlbumEl.classList.add('disabled-btn')
+  }
+}
+function toggleShowMore(){
+  fotos = JSON.parse(localStorage.getItem('fotos')) || [];
+  if(fotos.length <= 10 ){
+    showMoreBtnEl.disabled = true;
+    showMoreBtnEl.classList.add('disabled-btn')
+    showMoreBtnEl.innerText ='Show More';
+  } else {
+    showMoreBtnEl.classList.remove('disabled-btn')
+    showMoreBtnEl.disabled = false;
+  }
+
+}
 
 function addFoto(e) {
   e.preventDefault();
@@ -179,49 +177,31 @@ function addFoto(e) {
   emptyMessage(fotos);
 }
 
-
-function toggleShowMore(e) {
-  e.preventDefault();
-  if(JSON.parse(localStorage.getItem('fotos')).length <= 10) {
-    showMoreBtnEl.setAttribute('disabled', true)
-  }
-  else {
-    handleShowMore(fotos);
-  }
-}
-function handleShowMore(fotos) {
+function handleShowMore() {
+  event.preventDefault();
   mainEl.innerHTML = '';
   i = 0;
   if(showMoreBtnEl.innerText === 'Show More'){
-    fotos = JSON.parse(localStorage.getItem('fotos')) || [];
+    viewFavoritesBtnEl.innerText = 'View Favorites';
     showMoreBtnEl.innerText = 'Show Less';
-    iterateFotos(fotos);
-  }
-  else {
-    showMoreBtnEl.innerText = 'Show More';
-    iterateFotos(fotos);
-  }
-}
-
-
-function handleShowLess() {
-  console.log(fotos);
-  mainEl.innerHTML = '';
-  i = 0;
-  showMoreBtnEl.innerText = 'Show Less';
-  iterate(fotos);
+    fotos = JSON.parse(localStorage.getItem('fotos')) || [];
+    iterateFotos(fotos);} 
+    else{
+     viewFavoritesBtnEl.innerText = 'View Favorites';
+     showMoreBtnEl.innerText = 'Show More';
+     loadStorage(fotos);
+   }
 }
 
 function searchChecker() {
   var favoritedFotos = [];
   if (viewFavoritesBtnEl.innerText === 'View Favorites') {
-    searchFotos(fotos)
+    searchFotos(fotos);
   }
   else {
     fotos.forEach(fotos => {
       if(fotos.favorited){ 
-      favoritedFotos.push(fotos);
-      }
+      favoritedFotos.push(fotos);}
     })
     searchFotos(favoritedFotos);
   }
@@ -245,11 +225,11 @@ function toggleView(event) {
   if (viewFavoritesBtnEl.innerText === 'View Favorites'){
     viewFavorites();
     viewFavoritesBtnEl.innerText = 'View All Photos';
-  }
-  else {
-    mainEl.innerHTML = '';
-    loadFromNew(fotos);
-    viewFavoritesBtnEl.innerText = 'View Favorites';
+    showMoreBtnEl.innerText = 'Show More';
+  } else {
+      mainEl.innerHTML = '';
+      loadFromNew(fotos);
+      viewFavoritesBtnEl.innerText = 'View Favorites';
   }
 }
 
@@ -258,116 +238,94 @@ function viewFavorites() {
   var favoriteList = [];
   fotos.forEach(fotos => {
     if(fotos.favorited)
-      favoriteList.push(fotos);
+    favoriteList.push(fotos);
     })
   mainEl.innerHTML ='';
   loadFromNew(favoriteList);
 }
 
-/* -- Foto Functions --*/
-
 function buttonListener(e) {
   var favoriteBtnEl = document.querySelector('#favorite-btn');
   var trashBtnEl = document.querySelector('#trash-btn');
-  var targetFoto;
+  var targetImage;
   if(e.target.id == favoriteBtnEl.id) {
     photoTargeter(e);
     favoriteCards(e);
-  } 
-  else if(e.target.id == trashBtnEl.id){
-    photoTargeter(e);
-    deleteCards(e);
+  } else if(e.target.id == trashBtnEl.id){
+     photoTargeter(e);
+     deleteCards(e);
   }
 }
 
-// move delete cards to photo.js
 function deleteDuringFavorite(fotos){
   if(viewFavoritesBtnEl.innerText === 'View All Photos'){
-    viewFavorites(fotos)
-  }
-  else { 
-    loadFromNew(fotos);
+    viewFavorites(fotos);
   }
 }
 
-function deleteDuringShowMore(fotos){
-  if(JSON.parse(localStorage.getItem('fotos')).length >= 10){
-    showMoreBtnEl.innerHTML = 'Show More';
-  }
-  else {
-    showMoreBtnEl.innerHTML = 'Show Less';
+function deleteDuringShowMore(){
+  if(showMoreBtnEl.innerText === 'Show Less'){
+    i=0;
+    fotos = JSON.parse(localStorage.getItem('fotos')) || [];
+    mainEl.innerHTML = '';
+    iterateFotos(fotos);
   }
 }
 
-//move deleteCards
 function deleteCards(e) { 
   event.preventDefault()
-  var i = fotos.indexOf(targetFoto[0]);
+  let i = fotos.indexOf(targetImage[0]);
   var newPhoto = new Photo(fotos[i].id, fotos[i].title, fotos[i].caption, fotos[i].file, fotos[i].favorited);
-  fotos.splice(i, 1);
-  updateThenSave(i, newPhoto);
-  mainEl.innerHTML = '';
-  deleteDuringFavorite(fotos);
-  deleteDuringShowMore(fotos);
-
+  newPhoto.deleteFromStorage(i, newPhoto, fotos);
+  if(showMoreBtnEl.innerText === 'Show Less' || viewFavoritesBtnEl.innerText === 'View All Photos') {
+    deleteDuringFavorite(fotos);
+    deleteDuringShowMore(fotos); 
+  } else{
+    loadFromNew(fotos);
+  }
+  toggleShowMore();
 }
 
 function favoriteCards(e) {
-  var i = fotos.indexOf(targetFoto[0]);
+  var i = fotos.indexOf(targetImage[0]);
   var newPhoto = new Photo(fotos[i].id, fotos[i].title, fotos[i].caption, fotos[i].file, fotos[i].favorited);
   if(!fotos[i].favorited){
     newPhoto.favorited = true;
     e.target.classList.add('favorite-btn-active');
-  } 
-  else {
-    e.target.classList.remove('favorite-btn-active')
+  } else {
+      e.target.classList.remove('favorite-btn-active')
   }
   fotos.splice(i, 1, newPhoto);
   updateThenSave(i, newPhoto);
 }
 
-
-/* -- Editing Card Functions -- */ 
-
-//on blur event
-//move to photo
 function editFoto(e) {
   photoTargeter(e);
-  i = fotos.indexOf(targetFoto[0]);
-  if(i != undefined){
-  var newPhoto = new Photo(targetFoto[0].id, targetFoto[0].title, targetFoto[0].caption, targetFoto[0].file, targetFoto[0].favorited);
-  editFotoConditional(e, i, newPhoto)
+  var newPhoto = new Photo(targetImage[0].id, targetImage[0].title, targetImage[0].caption, targetImage[0].file, targetImage[0].favorited);
+  i = fotos.indexOf(targetImage[0]);
+  if(e.target.tagName === 'H2'){
+    newPhoto.title = e.target.innerHTML;
+    editConditional(e, i, newPhoto);
+  } else if(e.target.tagName === 'P'){
+      newPhoto.caption = e.target.innerHTML;
+      editConditional(e, i, newPhoto);
   }
 }
 
-function editFotoConditional(e, i, newPhoto){
-  if(e.target.tagName === 'H2'){
-    e.target.setAttribute("contentEditable", true);
-    newPhoto.title = e.target.innerHTML;
-  }
-  else if(e.target.tagName === 'P'){
-    e.target.setAttribute("contentEditable", true);
-    newPhoto.caption = e.target.innerHTML;
-  }
-  fotos.splice(i, 1, newPhoto);
-  updateThenSave(i, newPhoto);
-} 
-
+function editConditional(e, i, newPhoto, caption, property){
+    fotos.splice(i, 1, newPhoto);
+    updateThenSave(i, newPhoto);
+}
 
 function updateThenSave(i, newPhoto){
   newPhoto.updateStorage(i, newPhoto);
-  newPhoto.saveToStorage;
+  newPhoto.saveToStorage();
 }
 
-/* -- Targeting Functions -- */
-
 function photoTargeter(e) {
-  fotos = JSON.parse(localStorage.getItem('fotos'))
+  fotos = JSON.parse(localStorage.getItem('fotos'));
   var articleTarget = e.target.closest('article') || e.target;
-  targetFoto = fotos.filter(function(item) {
+  targetImage = fotos.filter(function(item) {
     return item.id === parseInt(articleTarget.getAttribute('data-id'));
   })
 }
-
-
-

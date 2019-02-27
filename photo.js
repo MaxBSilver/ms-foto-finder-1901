@@ -15,7 +15,15 @@ class Photo {
     localStorage.setItem('fotos', stringifiedPhotos);
   }
 
-  updateStorage(i, newPhoto) {
+  updateStorage(i, fotos) {
     localStorage.setItem('fotos', JSON.stringify(fotos));
   }
+
+  deleteFromStorage(i, newPhoto, fotos){
+    fotos.splice(i, 1);
+    updateThenSave(i, newPhoto);
+    mainEl.innerHTML = '';
+  }
+
 }
+

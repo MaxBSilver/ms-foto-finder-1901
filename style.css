@@ -1,10 +1,7 @@
-/* --- Global  --- */
-
 *:before,
 *:after,
 * {
   box-sizing: border-box;
-  /*border: red 1px solid;*/
 }
 
 body {
@@ -32,8 +29,6 @@ header button:hover {
   background-color:#938284;
 }
 
-/* -- Nav -- */
-
 nav {
   align-items: center;
   display: flex;
@@ -52,15 +47,15 @@ h1 {
   padding: 0;
 }
 h4 {
+  color: #3E2A35 ;
   font-size: 40px;
   font-weight: 300;
-  color: #3E2A35 ;
 
 }
 .logo-img {
-  margin: 0 5px;
-  margin-bottom: 5px;
   height: 50px;
+  margin-bottom: 5px;
+  margin: 0 5px;
   width: 50px;
 }
 
@@ -102,10 +97,9 @@ h4 {
 
 header {
   display: flex;
+  height: 332px;
   justify-content: center;
   margin-bottom: 20px;
-  height: 332px;
-
 }
 
 form {
@@ -129,7 +123,6 @@ button {
   font-size: 16px;
   font-weight: 600;
 }
-
 
 #title-input,
 #caption-input,
@@ -161,8 +154,8 @@ button {
 }
 
 .trash-btn:hover {
-  background-image: url("./fotofinder-assets/delete-active.svg");
   animation: rotateBtn 1s linear infinite;
+  background-image: url("./fotofinder-assets/delete-active.svg");
 }
 
 @keyframes rotateBtn {
@@ -184,13 +177,14 @@ button {
   height: 35px;
   margin: 0 20px;
   width: 35px;
-
 }
-
+/*
+*/
 .favorite-btn-active,
 .favorite-btn:hover {
   background-image: url("./fotofinder-assets/favorite-active.svg");
 }
+
 .favorite-btn:hover {
   animation: shake 0.5s linear infinite;
 }
@@ -221,6 +215,7 @@ button {
   justify-content: center;
   width: 100%;
 }
+
 .file-btn:hover > .choose-file-btn{
   background-color:#938284;
 
@@ -234,16 +229,16 @@ button {
 /* -- Main --*/
 
 main {
-  border: 1px #C2B2B4 solid;
-  background-color: #C2B2B4;
-  display: grid;
-  grid-template-columns: 22% 22% 22% 22%;
-  height: 100%;
-  min-height: 55vh;
-  padding: 0 50px;
   align-items:center;
-  justify-content: center;
+  background-color: #C2B2B4;
+  border: 1px #C2B2B4 solid;
+  display: grid;
   grid-gap: 30px;
+  grid-template-columns: repeat(4, 250px);
+  height: 100%;
+  justify-content: center;
+  min-height: 55vh;
+  padding: 30px 50px;
 }
 
 .photo {
@@ -251,11 +246,9 @@ main {
   border: #938284 1px solid;
   display:flex;
   flex-direction: column;
-  margin: 20px auto;
   height: 400px;
-  width:250px;
   min-width: 250px;
-  /*animation: fadein 2s;*/
+  width:250px;
 }
 
 @keyframes fadein {
@@ -278,12 +271,12 @@ h2 {
 }
 
 p {
-  height: 100px;
-  margin: 10px;
-  padding: 0;
   font-size: 16px;
   font-weight: 600;
-  line-height: 25px
+  height: 100px;
+  line-height: 25px;
+  margin: 10px;
+  padding: 0;
 }
 
 .photo-caption {
@@ -314,12 +307,10 @@ p {
 
 }
 
-
 .icon-styling {
   width: 40px;
 }
 
-/* Add Images Box */
 .empty {
   width: 100vw;
   align-items: center;
@@ -330,6 +321,12 @@ p {
   position: absolute;
 }
 
+.disabled-btn,
+.disabled-btn:hover {
+  background: grey;
+}
+
+
 .add-content {
   margin: 30px;
 }
@@ -338,29 +335,23 @@ p {
   display:none;
 }
 
-/* Media Queries */
 
 @media only screen and (max-width: 1150px) {
   main {
-    grid-template-columns: 33% 33% 33%;
+    grid-template-columns: repeat(3, auto);
   }
 }
 
 @media only screen and (max-width: 850px) {
   main {
-    grid-template-columns: 40% 40%;
+    grid-template-columns: repeat(2, auto);
   }
 }
 
-@media only screen and (max-width: 700px) {
-  main {
-    grid-template-columns: 100%;
-  }
-}
 
 @media only screen and (max-width: 600px) {
   main {
-    grid-template-columns: 100%;
+    grid-template-columns: auto;
   } 
   nav {
     flex-direction: column;   
@@ -371,6 +362,3 @@ p {
     width: 100%;
   }
 }
-
-/* Animations */
-
