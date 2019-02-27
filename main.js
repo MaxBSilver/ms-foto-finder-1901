@@ -1,7 +1,7 @@
 var addToAlbumEl = document.querySelector('.add-to-album-btn');
 var captionInputEl = document.querySelector('#caption-input');
 var chooseFileBtnEl = document.querySelector('.choose-file-btn');
-var emptyEl = document.querySelector('.empty')
+var emptyEl = document.querySelector('.empty');
 var favBtnEl = document.querySelector('.favorite-btn');
 var fileInputEl = document.querySelector('.file-input');
 var mainEl = document.querySelector('main');
@@ -13,11 +13,13 @@ var showMoreBtnEl = document.querySelector('.show-more-btn');
 var titleInputEl = document.querySelector('#title-input');
 var viewFavoritesBtnEl = document.querySelector('.view-favorites-btn');
 var fotos;
+var headerEl = document.querySelector('header');
 
 window.addEventListener('load', loadStorage);
 mainEl.addEventListener('focusout', function(e) {
     editFoto(e);
 });
+headerEl.addEventListener('change', toggleAddToAlbum);
 addToAlbumEl.addEventListener('click', addFoto);
 fileInputEl.addEventListener('change', chooseFotoFile);
 showMoreBtnEl.addEventListener('click', handleShowMore);
@@ -38,9 +40,9 @@ function create(e) {
   var captionInputVal = captionInputEl.value;
   var fileVal = addPhoto(e);
   var newPhoto = new Photo(cardId, titleInputVal, captionInputVal, fileVal);
-    if(newPhoto.title || newPhoto.caption || newPhoto.file != ''){
+  if(newPhoto.title || newPhoto.caption || newPhoto.file != ''){
     fotos.push(newPhoto);
-     newPhoto.saveToStorage();
+    newPhoto.saveToStorage();
   }
 }
 
@@ -49,10 +51,9 @@ function createDisplay(fotos){
   if(captionInputEl.value != '' && titleInputEl.value != '' && fileInputEl.value != ''){
     generateCard(fotos[i].id, fotos[i].title, fotos[i].caption, fotos[i].file);
     clearInputs();
-  }
-  else{
-    clearInputs();
-    alert('Missing a title, caption, or file!')
+  } else{
+     clearInputs();
+     alert('Missing a title, caption, or file!')
   }
 }
 
@@ -118,9 +119,8 @@ function loadFromNew(fotos) {
     const arrLengthMax = parseInt(fotos.length - 10);
     fotos = fotos.slice(arrLengthMax, arrLength);
     iterateFotos(fotos);
-  }
-  else if(fotos.length !=0 && fotos.length <  10){
-    iterateFotos(fotos);
+  } else if(fotos.length !=0 && fotos.length <  10){
+      iterateFotos(fotos);
   }
 }
 
@@ -133,9 +133,8 @@ function loadStorage() {
     const arrLengthMax = parseInt(fotos.length - 10);
     fotos = fotos.slice(arrLengthMax, arrLength);
     iterateFotos(fotos);
-  }
-  else if(fotos.length !=0 && fotos.length <  10){
-    iterateFotos(fotos);
+  } else if(fotos.length !=0 && fotos.length <  10){
+      iterateFotos(fotos);
   }
 }
 
@@ -143,6 +142,16 @@ function iterateFotos(fotos){
   fotos.forEach(function(){
     displayFotos(fotos);
   })
+}
+
+function toggleAddToAlbum(){
+  if(captionInputEl.value != '' && titleInputEl.value != '' && fileInputEl.value != ''){
+    addToAlbumEl.disabled = false;
+    addToAlbumEl.classList.remove('disabled-btn')
+  } else{
+      addToAlbumEl.disabled = true;
+      addToAlbumEl.classList.add('disabled-btn')
+  }
 }
 
 function addFoto(e) {
@@ -159,25 +168,23 @@ function handleShowMore() {
     viewFavoritesBtnEl.innerText = 'View Favorites';
     showMoreBtnEl.innerText = 'Show Less';
     fotos = JSON.parse(localStorage.getItem('fotos')) || [];
-    iterateFotos(fotos);
-  }
-  else{
-    viewFavoritesBtnEl.innerText = 'View Favorites';
-    showMoreBtnEl.innerText = 'Show More';
-    loadStorage(fotos);
-  }
+    iterateFotos(fotos);} 
+    else{
+     viewFavoritesBtnEl.innerText = 'View Favorites';
+     showMoreBtnEl.innerText = 'Show More';
+     loadStorage(fotos);
+   }
 }
 
 function searchChecker() {
   var favoritedFotos = [];
   if (viewFavoritesBtnEl.innerText === 'View Favorites') {
-    searchFotos(fotos)
+    searchFotos(fotos);
   }
   else {
     fotos.forEach(fotos => {
       if(fotos.favorited){ 
-      favoritedFotos.push(fotos);
-      }
+      favoritedFotos.push(fotos);}
     })
     searchFotos(favoritedFotos);
   }
@@ -201,12 +208,11 @@ function toggleView(event) {
   if (viewFavoritesBtnEl.innerText === 'View Favorites'){
     viewFavorites();
     viewFavoritesBtnEl.innerText = 'View All Photos';
-    showMoreBtnEl.innerText = 'Show More'
-  }
-  else {
-    mainEl.innerHTML = '';
-    loadFromNew(fotos);
-    viewFavoritesBtnEl.innerText = 'View Favorites';
+    showMoreBtnEl.innerText = 'Show More';
+  } else {
+      mainEl.innerHTML = '';
+      loadFromNew(fotos);
+      viewFavoritesBtnEl.innerText = 'View Favorites';
   }
 }
 
@@ -215,7 +221,7 @@ function viewFavorites() {
   var favoriteList = [];
   fotos.forEach(fotos => {
     if(fotos.favorited)
-      favoriteList.push(fotos);
+    favoriteList.push(fotos);
     })
   mainEl.innerHTML ='';
   loadFromNew(favoriteList);
@@ -228,19 +234,35 @@ function buttonListener(e) {
   if(e.target.id == favoriteBtnEl.id) {
     photoTargeter(e);
     favoriteCards(e);
-  } 
-  else if(e.target.id == trashBtnEl.id){
-    photoTargeter(e);
-    deleteCards(e);
+  } else if(e.target.id == trashBtnEl.id){
+     photoTargeter(e);
+     deleteCards(e);
+  }
+}
+
+function deleteDuringFavorite(fotos){
+  if(viewFavoritesBtnEl.innerText === 'View All Photos'){
+    viewFavorites(fotos);
+  } else { 
+      loadFromNew(fotos);
+  }
+}
+
+function deleteDuringShowMore(){
+  if(showMoreBtnEl.innerText === 'Show Less'){
+    showMoreBtnEl.innerHTML = 'Show More';
+  } else {
+      showMoreBtnEl.innerHTML = 'Show Less';
   }
 }
 
 function deleteCards(e) { 
+  event.preventDefault()
   var i = fotos.indexOf(targetImage[0]);
   var newPhoto = new Photo(fotos[i].id, fotos[i].title, fotos[i].caption, fotos[i].file, fotos[i].favorited);
-  newPhoto.deleteFromStorage(i, newPhoto);
-  newPhoto.saveToStorage();
-  loadFromNew(fotos);
+  newPhoto.deleteFromStorage(i, newPhoto, fotos)
+  deleteDuringShowMore();
+  deleteDuringFavorite(fotos);
 }
 
 function favoriteCards(e) {
@@ -249,9 +271,8 @@ function favoriteCards(e) {
   if(!fotos[i].favorited){
     newPhoto.favorited = true;
     e.target.classList.add('favorite-btn-active');
-  }  
-  else {
-    e.target.classList.remove('favorite-btn-active')
+  } else {
+      e.target.classList.remove('favorite-btn-active')
   }
   fotos.splice(i, 1, newPhoto);
   updateThenSave(i, newPhoto);
@@ -264,10 +285,9 @@ function editFoto(e) {
   if(e.target.tagName === 'H2'){
     newPhoto.title = e.target.innerHTML;
     editConditional(e, i, newPhoto);
-  }
-  else if(e.target.tagName === 'P'){
-    newPhoto.caption = e.target.innerHTML;
-    editConditional(e, i, newPhoto);
+  } else if(e.target.tagName === 'P'){
+      newPhoto.caption = e.target.innerHTML;
+      editConditional(e, i, newPhoto);
   }
 }
 
