@@ -23,6 +23,7 @@ mainEl.addEventListener('focusout', function(e) {
     editFoto(e);
   }
 });
+headerEl.addEventListener('click', searchChecker);
 headerEl.addEventListener('change', toggleAddToAlbum);
 addToAlbumEl.addEventListener('click', addFoto);
 fileInputEl.addEventListener('change', chooseFotoFile);
