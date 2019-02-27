@@ -16,9 +16,9 @@ var fotos;
 var headerEl = document.querySelector('header');
 
 window.addEventListener('load', loadStorage);
-mainEl.addEventListener('focusout', function(e) {
-    editFoto(e);
-});
+// mainEl.addEventListener('focusout', function(e) {
+//     editFoto(e);
+// });
 headerEl.addEventListener('change', toggleAddToAlbum);
 addToAlbumEl.addEventListener('click', addFoto);
 fileInputEl.addEventListener('change', chooseFotoFile);
@@ -114,12 +114,12 @@ function emptyMessage(fotos){
 
 function loadFromNew(fotos) {
   i = 0;
-  if(fotos.length != 0 && fotos.length > 10){
+  if(fotos.length != 0 && fotos.length >= 10){
     const arrLength = parseInt(fotos.length);
     const arrLengthMax = parseInt(fotos.length - 10);
     fotos = fotos.slice(arrLengthMax, arrLength);
     iterateFotos(fotos);
-  } else if(fotos.length !=0 && fotos.length <  10){
+  } else if(fotos.length !=0 && fotos.length <=  10){
       iterateFotos(fotos);
   }
 }
@@ -128,12 +128,12 @@ function loadStorage() {
   fotos = JSON.parse(localStorage.getItem('fotos')) || [];
   emptyMessage(fotos);
   i = 0;
-  if(fotos.length != 0 && fotos.length > 10){
+  if(fotos.length != 0 && fotos.length >= 10){
     const arrLength = parseInt(fotos.length);
     const arrLengthMax = parseInt(fotos.length - 10);
     fotos = fotos.slice(arrLengthMax, arrLength);
     iterateFotos(fotos);
-  } else if(fotos.length !=0 && fotos.length <  10){
+  } else if(fotos.length !=0 && fotos.length <=  10){
       iterateFotos(fotos);
   }
 }
@@ -243,26 +243,29 @@ function buttonListener(e) {
 function deleteDuringFavorite(fotos){
   if(viewFavoritesBtnEl.innerText === 'View All Photos'){
     viewFavorites(fotos);
-  } else { 
-      loadFromNew(fotos);
   }
 }
 
 function deleteDuringShowMore(){
   if(showMoreBtnEl.innerText === 'Show Less'){
-    showMoreBtnEl.innerHTML = 'Show More';
-  } else {
-      showMoreBtnEl.innerHTML = 'Show Less';
+    i=0;
+    fotos = JSON.parse(localStorage.getItem('fotos')) || [];
+    mainEl.innerHTML = '';
+    iterateFotos(fotos);
   }
 }
 
 function deleteCards(e) { 
   event.preventDefault()
-  var i = fotos.indexOf(targetImage[0]);
+  let i = fotos.indexOf(targetImage[0]);
   var newPhoto = new Photo(fotos[i].id, fotos[i].title, fotos[i].caption, fotos[i].file, fotos[i].favorited);
-  newPhoto.deleteFromStorage(i, newPhoto, fotos)
-  deleteDuringShowMore();
-  deleteDuringFavorite(fotos);
+  newPhoto.deleteFromStorage(i, newPhoto, fotos);
+  if(showMoreBtnEl.innerText === 'Show Less' || viewFavoritesBtnEl.innerText === 'View All Photos') {
+    deleteDuringFavorite(fotos);
+    deleteDuringShowMore(fotos); 
+  } else{
+    loadFromNew(photos);
+  }
 }
 
 function favoriteCards(e) {
