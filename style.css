@@ -321,9 +321,11 @@ p {
   position: absolute;
 }
 
-.disabled-btn {
+.disabled-btn,
+.disabled-btn:hover {
   background: grey;
 }
+
 
 .add-content {
   margin: 30px;

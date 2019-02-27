@@ -15,10 +15,14 @@ var viewFavoritesBtnEl = document.querySelector('.view-favorites-btn');
 var fotos;
 var headerEl = document.querySelector('header');
 
+
 window.addEventListener('load', loadStorage);
-// mainEl.addEventListener('focusout', function(e) {
-//     editFoto(e);
-// });
+window.addEventListener('load', toggleShowMore);
+mainEl.addEventListener('focusout', function(e) {
+  if(e != undefined){
+    editFoto(e);
+  }
+});
 headerEl.addEventListener('change', toggleAddToAlbum);
 addToAlbumEl.addEventListener('click', addFoto);
 fileInputEl.addEventListener('change', chooseFotoFile);
@@ -44,6 +48,7 @@ function create(e) {
     fotos.push(newPhoto);
     newPhoto.saveToStorage();
   }
+  toggleShowMore();
 }
 
 function createDisplay(fotos){
@@ -152,6 +157,18 @@ function toggleAddToAlbum(){
       addToAlbumEl.disabled = true;
       addToAlbumEl.classList.add('disabled-btn')
   }
+}
+function toggleShowMore(){
+  fotos = JSON.parse(localStorage.getItem('fotos')) || [];
+  if(fotos.length <= 10 ){
+    showMoreBtnEl.disabled = true;
+    showMoreBtnEl.classList.add('disabled-btn')
+    showMoreBtnEl.innerText ='Show More';
+  } else {
+    showMoreBtnEl.classList.remove('disabled-btn')
+    showMoreBtnEl.disabled = false;
+  }
+
 }
 
 function addFoto(e) {
@@ -264,8 +281,9 @@ function deleteCards(e) {
     deleteDuringFavorite(fotos);
     deleteDuringShowMore(fotos); 
   } else{
-    loadFromNew(photos);
+    loadFromNew(fotos);
   }
+  toggleShowMore();
 }
 
 function favoriteCards(e) {
